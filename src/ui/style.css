@@ -1,13 +1,146 @@
-
+/* Reset de bază */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+/* === VARIABILE DE CULOARE === */
+:root {
+    --color-background: #121131; /* Deep dark blue */
+    --color-text-primary: #ffeedd;
+    --color-main-accent: #8884ff; /* Soft periwinkle (Accent principal) */
+    --color-card-dark: #1c184c; /* Dark amethyst */
+    --color-hover-accent: #B1AEFF; /* Nuanță mai deschisă de accent */
+    --aura-color-1: #ffa04e; /* O nuanță mai deschisă, pentru centrul aurei */
+    --aura-color-2: #121131; /* Culoarea de fundal, pentru estompare */
+}
+
+/* === STILURI GLOBALE ȘI LAYOUT-UL DE LOGIN === */
 body {
-    font-family: sans-serif;
-    background-color: #121212; /* Culoare de fundal tipică Spotify */
-    color: white;
+    font-family: 'Outfit', sans-serif; 
+    background-color: var(--color-background); 
+    color: var(--color-text-primary);
     min-height: 100vh;
+    
+    /* Layout pentru centrare */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; 
+    text-align: center;
+    
+    position: relative; 
+    overflow: hidden; 
+}
+
+/* animatia de soft glow pe fundal ce feeric */
+
+/* 1. Definirea Animației de Pulsare (Aura) */
+@keyframes subtle-aura-pulse {
+    0% { transform: scale(1) translate(-50%, -50%); opacity: 0.5; }
+    50% { transform: scale(1.1) translate(-50%, -50%); opacity: 0.9; } /* Devine mai mare și mai vizibil */
+    100% { transform: scale(1) translate(-50%, -50%); opacity: 0.5; }
+}
+
+/* 2. Crearea Pseudo-Elementului pentru soft glow */
+body::before {
+    content: '';
+    position: fixed; 
+    
+    /* Centrare inițială pe ecran */
+    top: 50%; 
+    left: 50%;
+    /* Mutăm elementul cu jumătate din dimensiunea lui pentru a-l centra perfect */
+    transform: translate(-50%, -50%); 
+    
+    width: 80vh; /* Lățimea mare, adaptată la viewport */
+    height: 80vh;
+    border-radius: 50%; 
+    
+    /* Aplicăm gradient radial pentru a obține efectul de blur și estompare */
+    background: radial-gradient(
+        circle, 
+        var(--aura-color-1) 0%, 
+        var(--aura-color-2) 60%  
+    );
+    
+    filter: blur(80px); /* O blurare puternică pentru a face glow-ul subtil și moale */
+    z-index: -1; 
+    
+    /* Aplicăm animația de pulsare */
+    animation: subtle-aura-pulse 6s infinite alternate ease-in-out;
+}
+
+
+/* === TITLUL POWERPUFFY (Acum static) === */
+
+#main-header {
+    font-size: 2.5em; 
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 30px; 
+    width: 100%; 
+    text-align: center;
+    /* Strălucire statică, subtilă */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2); 
+}
+
+/* === CHENARUL DE LOGIN (Acum static) === */
+#login-main {
+    padding: 40px;
+    background-color: var(--color-card-dark);
+    border-radius: 20px; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7); 
+    
+    max-width: 400px;
+    width: 90%; 
+}
+
+/* === BUTONUL DE LOGIN === */
+#login-button {
+    background-color: var(--color-main-accent);
+    color: var(--color-text-primary);
+    border: none;
+    padding: 15px 30px;
+    margin-top: 20px;
+    border-radius: 50px; 
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s;
+}
+
+#login-button:hover {
+    background-color: var(--color-hover-accent); 
+    transform: scale(1.02); 
+}
+
+#login-button:active {
+    transform: scale(0.98);
+}
+
+/* === STILURI PENTRU PAGINA DE PROFIL (LAYOUT PRINCIPAL) === */
+
+#app-container {
+    /* Setăm body-ul să ocupe tot viewport-ul și nu să se centreze, 
+       când trecem pe pagina de profil */
+    display: block; 
+    min-height: 100vh;
+    padding: 0; 
+    background-color: var(--color-background); /* Reconfirmăm culoarea */
+}
+
+/* Layout Grid pentru Desktop */
+@media (min-width: 768px) {
+    #app-container {
+        display: grid;
+        grid-template-columns: 250px 1fr; 
+    }
+    
+    #sidebar {
+        display: block; 
+        background-color: var(--color-card-dark);
+        min-height: 100vh; /* Asigură că sidebar-ul ocupă toată înălțimea */
+    }
 }
