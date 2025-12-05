@@ -1,0 +1,13 @@
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: sans-serif;
+    background-color: #121212; /* Culoare de fundal tipică Spotify */
+    color: white;
+    min-height: 100vh;
+}
