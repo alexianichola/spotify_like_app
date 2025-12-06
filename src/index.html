@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Spotify Like App</title>
+  </head>
+  <body>
+    <button id="login">Login cu Spotify</button>
+
+    <script type="module">
+      import { login } from "./api/auth.js";
+
+      document.getElementById("login").addEventListener("click", login);
+    </script>
+  </body>
+</html>

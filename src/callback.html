@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Spotify Callback</title>
+  </head>
+  <body>
+    <script type="module">
+      import { getToken } from "./api/auth.js";
+      // extragem tot ce se afla dupa ?
+      const params = new URLSearchParams(window.location.search);
+      //extragem codul de dupa cuvantul code
+      const code = params.get("code");
+
+      if (code) {
+        getToken(code).then((token) => {
+          localStorage.setItem("spotifyToken", token);
+          //salvare in memorie a token ului sub o denumire
+          alert("Login reușit!");
+          // optional: redirecționezi înapoi la index.html
+          window.location = "index.html";
+        });
+      } else {
+        alert("Nu s-a primit codul OAuth!");
+      }
+    </script>
+  </body>
+</html>
