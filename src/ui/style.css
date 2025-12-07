@@ -206,7 +206,29 @@ body {
     #app-container.sidebar-closed #logout-button span {
         display: none;
     }
+/*aci fac plylist*/
+    #app-container.sidebar-closed #playlists-section h3 {
+        display: none; /* Ascunde titlul "Your Playlists" */
+    }
+    
+    /* Centrează iconițele playlist-urilor când sidebar-ul este mic */
+    #app-container.sidebar-closed #playlists-section a {
+        padding: 10px 0;
+        justify-content: center;
+    }
+    
+    #app-container.sidebar-closed #playlists-section a i {
+        margin: 0;
+    }
+    
+    /* Ascunde textele playlist-urilor */
+    #app-container.sidebar-closed #playlists-section span {
+        opacity: 0;
+        width: 0;
+        overflow: hidden;
+    }
 
+    /*aci nu mai fac plylist*/
     
     #sidebar {
         display: block !important; /* Arătăm sidebar-ul pe desktop */
@@ -757,4 +779,61 @@ body {
     padding: 5px 0;
     margin-top: 20px;
     font-size: 0.9em;
+}
+
+/* === STILIZARE SECTIUNE PLAYLISTS (NOU) === */
+
+#playlists-section {
+    flex-grow: 1; /* Permite secțiunii să ocupe spațiul rămas, deasupra Logout-ului */
+    margin-top: 30px; 
+    padding-top: 20px;
+    border-top: 1px solid var(--color-background); /* Separator subtil */
+    overflow-y: auto; /* Permite scroll dacă sunt multe playlist-uri */
+}
+
+#playlists-section h3 {
+    color: var(--color-text-primary);
+    opacity: 0.8;
+    font-size: 0.9em;
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    padding: 0 15px; /* Aliniere cu link-urile */
+}
+
+#playlist-list {
+    list-style: none;
+    text-align: left;
+}
+
+.playlist-item a {
+    /* Folosim stilul de bază al link-urilor din navigație */
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: 5px;
+    text-decoration: none;
+    color: var(--color-text-primary);
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    font-size: 0.95em;
+    display: flex; /* Pentru aliniere */
+    align-items: center;
+}
+
+.playlist-item a i {
+    margin-right: 15px; 
+    width: 20px;
+    text-align: center;
+}
+
+.playlist-item a:hover {
+    background-color: var(--color-ink-black); 
+    color: var(--color-main-accent); /* Schimbăm culoarea la hover */
+}
+
+/* Stil pentru link-ul de creare (pentru a-l evidenția ușor) */
+.playlist-item.create-new a {
+    color: var(--aura-color-1); 
+    font-weight: 600;
+    margin-top: 10px;
 }
