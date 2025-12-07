@@ -1,42 +1,48 @@
 <!DOCTYPE html>
 <html lang="ro">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SpotiPuff Profile</title>
-    
+
     <!-- fontul Outfit-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style.css"> 
-    
+
+    <link rel="stylesheet" href="style.css">
+
     <!-- Iconițe Font Awesome (necesar pentru sidebar și link-uri) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
+
 <body>
-    
-        <div id="app-container">
-        
+
+    <div id="app-container">
+
         <!-- === BARA LATERALĂ (SIDEBAR) === -->
         <aside id="sidebar">
             <div id="sidebar-header">
                 <h2>SpotiPuff</h2>
                 <!-- BUTON PENTRU ASCUNDERE/EXTINDERE -->
-                <button id="sidebar-toggle" onclick="document.getElementById('app-container').classList.toggle('sidebar-closed');">
+                <button id="sidebar-toggle"
+                    onclick="document.getElementById('app-container').classList.toggle('sidebar-closed');">
                     <i class="fas fa-angle-left"></i>
                 </button>
             </div>
-            
+
             <nav id="main-nav">
                 <ul>
-                    <li class="nav-item"><a href="profile.html" class="active"><i class="fas fa-home"></i> <span>Profile</span></a></li>
+                    <li class="nav-item"><a href="profile.html" class="active"><i class="fas fa-home"></i>
+                            <span>Profile</span></a></li>
                     <li class="nav-item">
-    <a href="#" id="activate-search-btn"><i class="fas fa-search"></i> <span>Search</span></a>
-</li>
-                    <li class="nav-item"><a href="top-artists.html"><i class="fas fa-palette"></i> <span>Top Artists</span></a></li>
-                    <li class="nav-item"><a href="top-albums.html"><i class="fas fa-compact-disc"></i> <span>Top Albums</span></a></li>
+                        <a href="#" id="activate-search-btn"><i class="fas fa-search"></i> <span>Search</span></a>
+                    </li>
+                    <li class="nav-item"><a href="top-artists.html"><i class="fas fa-palette"></i> <span>Top
+                                Artists</span></a></li>
+                    <li class="nav-item"><a href="top-albums.html"><i class="fas fa-compact-disc"></i> <span>Top
+                                Albums</span></a></li>
                 </ul>
             </nav>
 
@@ -45,53 +51,65 @@
             <div id="playlists-section">
                 <h3>Your Playlists</h3>
                 <ul id="playlist-list">
-                    <li class="playlist-item"><a href="#"><i class="fas fa-list-ul"></i> <span>Playlist 1</span></a></li>
-                    <li class="playlist-item"><a href="#"><i class="fas fa-list-ul"></i> <span>Playlist 2</span></a></li>
-                    
-                    <li class="playlist-item create-new"><a href="#"><i class="fas fa-plus-square"></i> <span>Create Playlist</span></a></li>
+                    <li class="playlist-item"><a href="#"><i class="fas fa-list-ul"></i> <span>Playlist 1</span></a>
+                    </li>
+                    <li class="playlist-item"><a href="#"><i class="fas fa-list-ul"></i> <span>Playlist 2</span></a>
+                    </li>
+
+                    <li class="playlist-item create-new"><a href="#"><i class="fas fa-plus-square"></i> <span>Create
+                                Playlist</span></a></li>
                 </ul>
             </div>
 
             <!-- aci am terminat playlistu-->
 
             <div id="utility-links">
-                <button id="logout-button" class="accent-button"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
+                <button id="logout-button" class="accent-button"><i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span></button>
             </div>
         </aside>
-        
+
         <!-- === ZONA DE CONȚINUT PRINCIPAL === -->
         <main id="content">
 
             <!-- Search Bar -->
-             <div id="global-search-overlay">
-        <div id="search-input-container">
-            <i class="fas fa-search"></i>
-            <input type="text" id="global-search-input" placeholder="Ce dorești să asculți?">
-            <button id="close-search-btn" style="display: none;"><i class="fas fa-times"></i></button>
-        </div>
-        
-        <div id="global-search-results">
-            <h2>Căutări recente</h2>
-            <div id="recent-search-cards">
-                <p class="subtle-text">Aici vor apărea listele de căutări recente (piese, artiști).</p>
+            <div id="global-search-overlay">
+                <div id="search-input-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="global-search-input" placeholder="What's on your mind?">
+                    <button id="close-search-btn" style="display: none;"><i class="fas fa-times"></i></button>
+                </div>
+
+                <div id="global-search-results">
+                    <h2>Recent searches</h2>
+                    <div id="recent-search-cards">
+                        <p class="subtle-text">Your recent searches are here.</p>
+                    </div>
+
+                    <h2 style="margin-top: 30px;">Live Results</h2>
+                    <div id="search-results-list">
+                        <p class="subtle-text">write min. 3 characters</p>
+                    </div>
+                    <button class="clear-button subtle-text">Delete recent searches</button>
+                </div>
             </div>
-            <button class="clear-button subtle-text">Șterge căutările recente</button>
-        </div>
-    </div>
-            
+
             <!-- === 1. PROFIL HEADER (Nume, Poza, Email) === -->
             <header id="profile-header">
                 <div id="profile-picture-container">
-                    <img id="user-profile-image" src="https://placehold.co/150x150/1C184C/FFeedd?text=P" alt="Profile picture" onerror="this.onerror=null;this.src='https://placehold.co/150x150/1C184C/FFeedd?text=P'">
+                    <img id="user-profile-image" src="https://placehold.co/150x150/1C184C/FFeedd?text=P"
+                        alt="Profile picture"
+                        onerror="this.onerror=null;this.src='https://placehold.co/150x150/1C184C/FFeedd?text=P'">
                 </div>
                 <div id="profile-details">
                     <p class="profile-greeting">Hey Jude, </p>
                     <h1 id="user-display-name">username </h1>
                     <p id="user-email-address" class="subtle-text">yourmail@spotify-user.com</p>
                 </div>
-                
+
                 <!-- Am adăugat ID-ul utilizatorului aici (pentru cerința din instrucțiunile Gemini) -->
-                <p id="user-id-display" class="subtle-text" style="position: absolute; bottom: 10px; right: 10px;">SpotiPuff ID</p>
+                <p id="user-id-display" class="subtle-text" style="position: absolute; bottom: 10px; right: 10px;">
+                    SpotiPuff ID</p>
 
             </header>
 
@@ -101,14 +119,39 @@
                     <h2>Top 5 Artists</h2>
                     <a href="top-artists.html" class="view-all-link">View all <i class="fas fa-chevron-right"></i></a>
                 </div>
-                
+
                 <!-- Card-uri de artiști: 5 coloane pe desktop (regula specială din CSS) -->
                 <div id="top-artists-grid" class="card-grid">
-                    <div class="music-card artist-card"><span class="card-rank">1</span><img src="https://placehold.co/150x150/4C468E/FFeedd?text=Artist+1" class="card-image" alt="Artist Placeholder"><h4 class="card-title">Artist</h4><p class="card-subtitle">Artist</p></div>
-                    <div class="music-card artist-card"><span class="card-rank">2</span><img src="https://placehold.co/150x150/4C468E/FFeedd?text=Artist+2" class="card-image" alt="Artist Placeholder"><h4 class="card-title">Artist</h4><p class="card-subtitle">Artist</p></div>
-                    <div class="music-card artist-card"><span class="card-rank">3</span><img src="https://placehold.co/150x150/4C468E/FFeedd?text=Artist+3" class="card-image" alt="Artist Placeholder"><h4 class="card-title">Artist</h4><p class="card-subtitle">Artist</p></div>
-                    <div class="music-card artist-card hidden-mobile"><span class="card-rank">4</span><img src="https://placehold.co/150x150/4C468E/FFeedd?text=Artist+4" class="card-image" alt="Artist Placeholder"><h4 class="card-title">Artist</h4><p class="card-subtitle">Artist</p></div>
-                    <div class="music-card artist-card hidden-mobile"><span class="card-rank">5</span><img src="https://placehold.co/150x150/4C468E/FFeedd?text=Artist+5" class="card-image" alt="Artist Placeholder"><h4 class="card-title">Artist</h4><p class="card-subtitle">Artist</p></div>
+                    <div class="music-card artist-card"><span class="card-rank">1</span><img
+                            src="https://placehold.co/150x150/4C468E/FFeedd?text=Artist+1" class="card-image"
+                            alt="Artist Placeholder">
+                        <h4 class="card-title">Artist</h4>
+                        <p class="card-subtitle">Artist</p>
+                    </div>
+                    <div class="music-card artist-card"><span class="card-rank">2</span><img
+                            src="https://placehold.co/150x150/4C468E/FFeedd?text=Artist+2" class="card-image"
+                            alt="Artist Placeholder">
+                        <h4 class="card-title">Artist</h4>
+                        <p class="card-subtitle">Artist</p>
+                    </div>
+                    <div class="music-card artist-card"><span class="card-rank">3</span><img
+                            src="https://placehold.co/150x150/4C468E/FFeedd?text=Artist+3" class="card-image"
+                            alt="Artist Placeholder">
+                        <h4 class="card-title">Artist</h4>
+                        <p class="card-subtitle">Artist</p>
+                    </div>
+                    <div class="music-card artist-card hidden-mobile"><span class="card-rank">4</span><img
+                            src="https://placehold.co/150x150/4C468E/FFeedd?text=Artist+4" class="card-image"
+                            alt="Artist Placeholder">
+                        <h4 class="card-title">Artist</h4>
+                        <p class="card-subtitle">Artist</p>
+                    </div>
+                    <div class="music-card artist-card hidden-mobile"><span class="card-rank">5</span><img
+                            src="https://placehold.co/150x150/4C468E/FFeedd?text=Artist+5" class="card-image"
+                            alt="Artist Placeholder">
+                        <h4 class="card-title">Artist</h4>
+                        <p class="card-subtitle">Artist</p>
+                    </div>
                 </div>
             </section>
 
@@ -118,34 +161,110 @@
                     <h2>Top 5 Albums</h2>
                     <a href="top-albums.html" class="view-all-link">View all <i class="fas fa-chevron-right"></i></a>
                 </div>
-                
+
                 <div id="top-albums-grid" class="card-grid">
                     <!-- PLACEHOLDERS: Albume -->
-                    <div class="music-card album-card"><span class="card-rank">1</span><img src="https://placehold.co/150x150/1C184C/FFeedd?text=Album+1" class="card-image" alt="Album Placeholder"><h4 class="card-title">Album Title</h4><p class="card-subtitle">Artist</p></div>
-                    <div class="music-card album-card"><span class="card-rank">2</span><img src="https://placehold.co/150x150/1C184C/FFeedd?text=Album+2" class="card-image" alt="Album Placeholder"><h4 class="card-title">Album Title</h4><p class="card-subtitle">Artist</p></div>
-                    <div class="music-card album-card"><span class="card-rank">3</span><img src="https://placehold.co/150x150/1C184C/FFeedd?text=Album+3" class="card-image" alt="Album Placeholder"><h4 class="card-title">Album Title</h4><p class="card-subtitle">Artist</p></div>
-                    <div class="music-card album-card hidden-mobile"><span class="card-rank">4</span><img src="https://placehold.co/150x150/1C184C/FFeedd?text=Album+4" class="card-image" alt="Album Placeholder"><h4 class="card-title">Album Title</h4><p class="card-subtitle">Artist</p></div>
-                    <div class="music-card album-card hidden-mobile"><span class="card-rank">5</span><img src="https://placehold.co/150x150/1C184C/FFeedd?text=Album+5" class="card-image" alt="Album Placeholder"><h4 class="card-title">Album Title</h4><p class="card-subtitle">Artist</p></div>
+                    <div class="music-card album-card"><span class="card-rank">1</span><img
+                            src="https://placehold.co/150x150/1C184C/FFeedd?text=Album+1" class="card-image"
+                            alt="Album Placeholder">
+                        <h4 class="card-title">Album Title</h4>
+                        <p class="card-subtitle">Artist</p>
+                    </div>
+                    <div class="music-card album-card"><span class="card-rank">2</span><img
+                            src="https://placehold.co/150x150/1C184C/FFeedd?text=Album+2" class="card-image"
+                            alt="Album Placeholder">
+                        <h4 class="card-title">Album Title</h4>
+                        <p class="card-subtitle">Artist</p>
+                    </div>
+                    <div class="music-card album-card"><span class="card-rank">3</span><img
+                            src="https://placehold.co/150x150/1C184C/FFeedd?text=Album+3" class="card-image"
+                            alt="Album Placeholder">
+                        <h4 class="card-title">Album Title</h4>
+                        <p class="card-subtitle">Artist</p>
+                    </div>
+                    <div class="music-card album-card hidden-mobile"><span class="card-rank">4</span><img
+                            src="https://placehold.co/150x150/1C184C/FFeedd?text=Album+4" class="card-image"
+                            alt="Album Placeholder">
+                        <h4 class="card-title">Album Title</h4>
+                        <p class="card-subtitle">Artist</p>
+                    </div>
+                    <div class="music-card album-card hidden-mobile"><span class="card-rank">5</span><img
+                            src="https://placehold.co/150x150/1C184C/FFeedd?text=Album+5" class="card-image"
+                            alt="Album Placeholder">
+                        <h4 class="card-title">Album Title</h4>
+                        <p class="card-subtitle">Artist</p>
+                    </div>
                 </div>
             </section>
 
             <!-- Aci fac song recommendations -->
-             <section class="content-section">
+            <section class="content-section">
                 <div class="section-header">
-                    <h2>Picked for you</h2> 
+                    <h2>Picked for you</h2>
                 </div>
-                
+
                 <div id="recommendations-grid" class="card-grid">
-                    <div class="music-card album-card"><img src="https://placehold.co/150x150/8884FF/121131?text=Rec+1" class="card-image" alt="Recommendation Placeholder"><h4 class="card-title">Recommended Track</h4><p class="card-subtitle">Artist Name</p></div>
-                    <div class="music-card album-card"><img src="https://placehold.co/150x150/8884FF/121131?text=Rec+2" class="card-image" alt="Recommendation Placeholder"><h4 class="card-title">Recommended Track</h4><p class="card-subtitle">Artist Name</p></div>
-                    <div class="music-card album-card"><img src="https://placehold.co/150x150/8884FF/121131?text=Rec+3" class="card-image" alt="Recommendation Placeholder"><h4 class="card-title">Recommended Track</h4><p class="card-subtitle">Artist Name</p></div>
-                    <div class="music-card album-card hidden-mobile"><img src="https://placehold.co/150x150/8884FF/121131?text=Rec+4" class="card-image" alt="Recommendation Placeholder"><h4 class="card-title">Recommended Track</h4><p class="card-subtitle">Artist Name</p></div>
-                    <div class="music-card album-card hidden-mobile"><img src="https://placehold.co/150x150/8884FF/121131?text=Rec+5" class="card-image" alt="Recommendation Placeholder"><h4 class="card-title">Recommended Track</h4><p class="card-subtitle">Artist Name</p></div>
+                    <!-- aci modific si adaug butonu de play for play a song -->
+
+                    <div class="music-card album-card">
+                        <img src="https://placehold.co/150x150/8884FF/121131?text=Rec+1" class="card-image"
+                            alt="Recommendation Placeholder">
+                        <h4 class="card-title">Recommended Track</h4>
+                        <p class="card-subtitle">Artist Name</p>
+
+                        <button class="play-button" data-uri="spotify:track:rec1">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    <div class="music-card album-card">
+                        <img src="https://placehold.co/150x150/8884FF/121131?text=Rec+2" class="card-image"
+                            alt="Recommendation Placeholder">
+                        <h4 class="card-title">Recommended Track</h4>
+                        <p class="card-subtitle">Artist Name</p>
+
+                        <button class="play-button" data-uri="spotify:track:rec2">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    <div class="music-card album-card">
+                        <img src="https://placehold.co/150x150/8884FF/121131?text=Rec+3" class="card-image"
+                            alt="Recommendation Placeholder">
+                        <h4 class="card-title">Recommended Track</h4>
+                        <p class="card-subtitle">Artist Name</p>
+
+                        <button class="play-button" data-uri="spotify:track:rec3">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+
+                    <div class="music-card album-card">
+                        <img src="https://placehold.co/150x150/8884FF/121131?text=Rec+4" class="card-image"
+                            alt="Recommendation Placeholder">
+                        <h4 class="card-title">Recommended Track</h4>
+                        <p class="card-subtitle">Artist Name</p>
+
+                        <button class="play-button" data-uri="spotify:track:rec4">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+
+                    <div class="music-card album-card">
+                        <img src="https://placehold.co/150x150/8884FF/121131?text=Rec+5" class="card-image"
+                            alt="Recommendation Placeholder">
+                        <h4 class="card-title">Recommended Track</h4>
+                        <p class="card-subtitle">Artist Name</p>
+
+                        <button class="play-button" data-uri="spotify:track:rec5">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+
+
                 </div>
             </section>
 
         </main>
-        
+
         <!-- === COLOANA 3: MUSIC PLAYER (ADĂUGATĂ AICI) === -->
         <aside id="music-player-bar">
             <h3>Song Player</h3>
@@ -158,32 +277,36 @@
 
                 <!-- Aici va fi UI-ul playerului (ascuns inițial) -->
                 <div id="song-playing-ui" style="display: none;">
-                    <img id="current-album-art" src="https://placehold.co/200x200/1C184C/FFeedd?text=Album" alt="Album Art">
+                    <img id="current-album-art" src="https://placehold.co/200x200/1C184C/FFeedd?text=Album"
+                        alt="Album Art">
                     <h4 id="current-song-title">Song Title</h4>
                     <p id="current-artist-name" class="subtle-text">Artist</p>
                     <div id="player-controls">
-                        <button><i class="fas fa-step-backward"></i></button>
-                        <button class="accent-button"><i class="fas fa-play"></i></button>
-                        <button><i class="fas fa-step-forward"></i></button>
+                        <button data-action="previous"><i class="fas fa-step-backward"></i></button>
+
+                        <button class="accent-button" data-action="pause"><i class="fas fa-play"></i></button>
+
+                        <button data-action="next"><i class="fas fa-step-forward"></i></button>
                     </div>
                 </div>
             </div>
         </aside>
-        
-    </div> 
+
+    </div>
 
     <!-- === NAVIGAȚIE DE JOS (MOBILE) === -->
     <nav id="mobile-bottom-nav">
         <ul>
             <li><a href="profile.html" class="active"><i class="fas fa-home"></i> Profile</a></li>
             <li>
-    <a href="#" id="activate-search-btn-mobile"><i class="fas fa-search"></i> Search </a>
-</li>
+                <a href="#" id="activate-search-btn-mobile"><i class="fas fa-search"></i> Search </a>
+            </li>
             <li><a href="top-artists.html"><i class="fas fa-palette"></i> Artists</a></li>
             <li><a href="top-albums.html"><i class="fas fa-compact-disc"></i> Albums</a></li>
         </ul>
     </nav>
-    
-    
+
+
 </body>
+
 </html>

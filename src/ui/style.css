@@ -229,7 +229,7 @@ body {
     }
 
     /*aci nu mai fac plylist*/
-    
+
     #sidebar {
         display: block !important; /* Arătăm sidebar-ul pe desktop */
         background-color: var(--color-card-dark);
@@ -521,6 +521,45 @@ body {
     transform: translateY(-5px);
 }
 
+/*aci fac play button*/
+.music-card .play-button {
+    position: absolute;
+    bottom: 25px; /* Ajustează poziția verticală */
+    right: 25px;  /* Ajustează poziția orizontală */
+    width: 45px;
+    height: 45px;
+    background-color: var(--color-main-accent); /* Culoarea accentului */
+    border: none;
+    border-radius: 50%;
+    color: var(--color-card-dark); /* Culoarea iconiței (text) */
+    cursor: pointer;
+    opacity: 0; 
+    transform: translateY(10px); /* Ascuns puțin sub card */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    display: flex; /* Pentru a centra iconița */
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+}
+
+/* Afișează butonul la Hover pe Card */
+.music-card:hover .play-button {
+    opacity: 1; 
+    transform: translateY(0);
+}
+
+.music-card .play-button:hover {
+    background-color: var(--color-hover-accent); 
+    transform: scale(1.05);
+}
+
+.music-card .play-button:active {
+    transform: scale(0.95);
+}
+/*aci am fct play button*/
+
+
 .card-image {
     width: 100%;
     border-radius: 8px; 
@@ -753,6 +792,68 @@ body {
     opacity: 0.7;
     font-size: 1.2em;
 }
+/*aci ma ocup de clasele de play din search bar*/
+.search-track-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background-color: var(--color-ink-black);
+    transition: background-color 0.2s;
+    position: relative;
+    cursor: pointer;
+}
+
+.search-track-item:hover {
+    background-color: var(--color-background);
+}
+
+.search-track-track-info {
+    flex-grow: 1; /* Ocupă spațiul rămas */
+    margin-left: 15px;
+}
+
+.search-track-title {
+    font-weight: 600;
+}
+
+.search-track-artist {
+    font-size: 0.85em;
+    opacity: 0.6;
+}
+
+/* Stil pentru Butonul de Play de lângă elementul din Căutare */
+.search-track-item .play-button {
+    /* Folosim același stil de buton circular ca la carduri, dar îl facem mai mic și vizibil direct */
+    width: 35px;
+    height: 35px;
+    background-color: var(--color-main-accent);
+    color: var(--color-card-dark);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1em;
+    flex-shrink: 0; /* Nu se micșorează */
+}
+
+/* !!!!!!IMPORTANT: Mock-ul Persoanei C va trebui să genereze HTML-ul de mai jos */
+/* Exemplu de HTML pe care Persoana C ar trebui să îl genereze:
+
+<div class="search-track-item" data-uri="spotify:track:result456">
+    <button class="play-button" data-uri="spotify:track:result456">
+        <i class="fas fa-play"></i>
+    </button>
+    <div class="search-track-track-info">
+        <div class="search-track-title">Mock Track Query</div>
+        <div class="search-track-artist">Mock Artist</div>
+    </div>
+</div>
+*/
+/*aci am terminat clasele pt play din search bar*/
 
 /* Stil pentru Butonul de închidere */
 #close-search-btn {
