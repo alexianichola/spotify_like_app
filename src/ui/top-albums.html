@@ -3,19 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Albume</title>
+    <title>Top Albums SpotiPuff</title> 
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <div id="main-layout">
-        <aside id="sidebar">...</aside>
+    
+    <div id="app-container">
+        
+        <aside id="sidebar">
+            <div id="sidebar-header">
+                <h2>SpotiPuff</h2>
+                <button id="sidebar-toggle" onclick="document.getElementById('app-container').classList.toggle('sidebar-closed');">
+                    <i class="fas fa-angle-left"></i>
+                </button>
+            </div>
+            
+            <nav id="main-nav">
+                <ul>
+                    <li class="nav-item"><a href="profile.html"><i class="fas fa-home"></i> <span>Profile</span></a></li>
+                    <li class="nav-item"><a href="search.html"><i class="fas fa-search"></i> <span>Search</span></a></li>
+                    <li class="nav-item"><a href="top-artists.html"><i class="fas fa-palette"></i> <span>Top Artists</span></a></li>
+                    <li class="nav-item"><a href="top-albums.html" class="active"><i class="fas fa-compact-disc"></i> <span>Top Albums</span></a></li>
+                </ul>
+            </nav>
+
+            <div id="utility-links">
+                <button id="logout-button" class="accent-button"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
+            </div>
+        </aside>
         
         <main id="content">
-            <h2>Toate Albumele Ascultate</h2>
-            <section id="full-top-albums-list" class="card-grid">
-                <p>Aici va fi lista extinsă de albume.</p>
+            <header class="page-header">
+                <h1>You listened, we counted, your top albums are here</h1>
+                <!-- <p class="subtle-text"></p> -->
+            </header>
+            
+            <section id="full-top-albums-list" class="card-grid large-grid">
+                <div class="music-card album-card"><span class="card-rank">1</span><img src="https://placehold.co/150x150/1C184C/FFeedd?text=A1" class="card-image" alt="Album 1"><h4 class="card-title">Album Title</h4><p class="card-subtitle">Artist</p></div>
+                <div class="music-card album-card"><span class="card-rank">2</span><img src="https://placehold.co/150x150/1C184C/FFeedd?text=A2" class="card-image" alt="Album 2"><h4 class="card-title">Album Title</h4><p class="card-subtitle">Artist</p></div>
+                <div class="music-card album-card"><span class="card-rank">3</span><img src="https://placehold.co/150x150/1C184C/FFeedd?text=A3" class="card-image" alt="Album 3"><h4 class="card-title">Album Title</h4><p class="card-subtitle">Artist</p></div>
+                <div class="music-card album-card"><span class="card-rank">4</span><img src="https://placehold.co/150x150/1C184C/FFeedd?text=A4" class="card-image" alt="Album 4"><h4 class="card-title">Album Title</h4><p class="card-subtitle">Artist</p></div>
+                <div class="music-card album-card"><span class="card-rank">5</span><img src="https://placehold.co/150x150/1C184C/FFeedd?text=A5" class="card-image" alt="Album 5"><h4 class="card-title">Album Title</h4><p class="card-subtitle">Artist</p></div>
+                <div class="music-card album-card"><span class="card-rank">6</span><img src="https://placehold.co/150x150/1C184C/FFeedd?text=A6" class="card-image" alt="Album 6"><h4 class="card-title">Album Title</h4><p class="card-subtitle">Artist</p></div>
             </section>
         </main>
-    </div>
+        
+        <aside id="music-player-bar">
+            <h3>Song Player</h3>
+            <div id="player-content">
+                <div id="no-song-message">
+                    <i class="fas fa-headphones-alt fa-3x" style="color: var(--color-main-accent);"></i>
+                    <p class="subtle-text" style="margin-top: 15px;">Looking for a song to play...</p>
+                </div>
+
+                <div id="song-playing-ui" style="display: none;">
+                    <img id="current-album-art" src="https://placehold.co/200x200/1C184C/FFeedd?text=Album" alt="Album Art">
+                    <h4 id="current-song-title">Song Title</h4>
+                    <p id="current-artist-name" class="subtle-text">Artist</p>
+                    <div id="player-controls">
+                        <button><i class="fas fa-step-backward"></i></button>
+                        <button class="accent-button"><i class="fas fa-play"></i></button>
+                        <button><i class="fas fa-step-forward"></i></button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+    </div> 
+
+    <nav id="mobile-bottom-nav">
+        <ul>
+            <li><a href="profile.html"><i class="fas fa-home"></i> Profile</a></li>
+            <li><a href="search.html"><i class="fas fa-search"></i> Search</a></li>
+            <li><a href="top-artists.html"><i class="fas fa-palette"></i> Artists</a></li>
+            <li><a href="top-albums.html" class="active"><i class="fas fa-compact-disc"></i> Albums</a></li>
+        </ul>
+    </nav>
+    
 </body>
 </html>

@@ -12,8 +12,10 @@
     --color-main-accent: #8884ff; /* Soft periwinkle (Accent principal) */
     --color-card-dark: #1c184c; /* Dark amethyst */
     --color-hover-accent: #B1AEFF; /* Nuanță mai deschisă de accent */
+    --color-hover: #282828;
     --aura-color-1: #ffa04e; /* Culoarea aurei (folosit acum portocaliu pentru contrast) */
     --aura-color-2: #121131; /* Culoarea de fundal, pentru estompare */
+    --color-ink-black: #0C0B20; 
 }
 
 /* === STILURI GLOBALE DE BAZĂ === */
@@ -124,25 +126,100 @@ body {
     min-height: 100vh;
     height: 100%;
 }
+/* 1. STILUL BAREI LATERALE (DEFAULT - DESCHIS) */
+#sidebar {
+    background-color: var(--color-card-dark);
+    padding: 20px;
+    display: flex; 
+    flex-direction: column;
+    justify-content: space-between; 
+    position: sticky; 
+    top: 0;
+    height: 100vh;
+    transition: width 0.3s ease; /* Adăugăm tranziție pe lățime */
+}
 
+/* 2. BUTONUL DE ASCUNDERE */
+#sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+#sidebar-toggle {
+    background: none;
+    border: none;
+    color: var(--color-text-primary);
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+/* 3. ASCUNDERE TEXTE CÂND SIDEBAR-UL ESTE MIC */
+#sidebar span {
+    transition: opacity 0.3s ease;
+}
 /* Layout Grid pentru Desktop */
 @media (min-width: 768px) {
     #app-container {
         display: grid;
-        grid-template-columns: 250px 1fr; 
+        grid-template-columns: 250px 1fr 300px; 
     }
+     /* 5. STAREA ASCUNSĂ (SIDEBAR-CLOSED) */
+    #app-container.sidebar-closed {
+        /* Micșorăm sidebar-ul la 80px */
+        grid-template-columns: 80px 1fr 300px; 
+    }
+
+    /* Ascundem titlul SpotiPuff */
+    #app-container.sidebar-closed #sidebar h2 {
+        display: none;
+    }
+    
+    /* Rotește săgeata */
+    #app-container.sidebar-closed #sidebar-toggle {
+        transform: rotate(180deg);
+    }
+    
+    /* Ascundem textele din sidebar (Profile, Search, etc.) */
+    #app-container.sidebar-closed #sidebar span {
+        opacity: 0;
+        width: 0;
+        overflow: hidden;
+    }
+
+    /* Centrare iconițe când sidebar-ul este mic */
+    #app-container.sidebar-closed #main-nav a {
+        padding: 10px 0;
+        justify-content: center;
+    }
+    #app-container.sidebar-closed #main-nav a i {
+        margin: 0;
+    }
+    
+    /* Butonul de Logout (doar iconiță) */
+    #app-container.sidebar-closed #logout-button {
+        padding: 10px;
+        width: 60%;
+        margin: 0 auto;
+    }
+    #app-container.sidebar-closed #logout-button span {
+        display: none;
+    }
+
     
     #sidebar {
         display: block !important; /* Arătăm sidebar-ul pe desktop */
         background-color: var(--color-card-dark);
         min-height: 100vh; 
         height: 100%;
+        padding: 20px 10px;
     }
 }
 
 /* === STILIZARE SIDEBAR === */
 #sidebar {
-    background-color: #0C0B20; /*un ink black asa*/
+    background-color: var(--color-ink-black); /*un ink black asa*/
     padding: 20px;
     display: flex; 
     flex-direction: column;
@@ -188,7 +265,7 @@ body {
 }
 
 .nav-item a:hover {
-    background-color: var(--color-hover); 
+    background-color: var(--color-ink-black); 
     color: var(--aura-color-1);
 }
 
@@ -201,7 +278,7 @@ body {
 /* Stil pentru Butonul de Deconectare */
 #utility-links {
     padding-top: 20px;
-    border-top: 1px solid #121131;
+    border-top: 1px solid var(--color-background);
 }
 
 #logout-button {
@@ -216,7 +293,7 @@ body {
 }
 
 #logout-button:hover {
-    background-color: #121131; 
+    background-color: var(--color-background); 
 }
 
 
@@ -358,23 +435,23 @@ body {
 }
 
 @media (min-width: 768px) {
-    .card-grid {
+
+    /*modificata pentru profile ca acolo n am player de muzica*/ 
+    /*#profile-header + .content-section */.card-grid { 
         grid-template-columns: repeat(5, 1fr); 
     }
     .hidden-mobile {
         display: block !important; 
     }
 }
-
 .hidden-mobile {
     display: none;
 }
 
-
 /* --- STILIZAREA CARDULUI DE BAZĂ --- */
 
 .music-card {
-    background-color: #0C0B20;
+    background-color: var(--color-ink-black);
     padding: 15px;
     border-radius: 12px;
     text-align: left;
@@ -384,7 +461,7 @@ body {
 }
 
 .music-card:hover {
-    background-color: var(--color-hover); 
+    background-color: var(--color-background); 
     transform: translateY(-5px);
 }
 
@@ -441,5 +518,123 @@ body {
     #profile-picture-container img {
         width: 120px;
         height: 120px;
+    }
+}
+/* === STILIZARE HEADER PAGINĂ (Toate Paginile Secundare) === */
+.page-header {
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--color-card-dark);
+}
+
+.page-header h1 {
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--color-hover-accent);
+}
+
+.page-header .subtle-text {
+    margin-top: 5px;
+    font-size: 0.9em;
+    opacity: 0.7;
+}
+
+/* Stil pentru grid-urile mari (pe paginile complete de listare) */
+@media (min-width: 1024px) {
+    .large-grid {
+        
+        grid-template-columns: repeat(3, 1fr); 
+    }
+}
+@media (min-width: 1400px) {
+    .large-grid {
+        
+        grid-template-columns: repeat(3, 1fr); 
+    }
+}
+/* === STILIZARE MUSIC PLAYER (COLOANA 3) === */
+
+#music-player-bar {
+    background-color: var(--color-ink-black);
+    padding: 20px;
+    height: 100vh;
+    overflow-y: auto;
+    text-align: center;
+    
+    /* Pe mobil, bara playerului este ascunsă */
+    display: none; 
+}
+
+/* Modificăm layout-ul principal pentru a include playerul */
+@media (min-width: 768px) {
+    /* Reactivăm music player-ul pe desktop */
+    #music-player-bar {
+        display: block; 
+    }
+}
+
+#music-player-bar h3 {
+    color: var(--color-main-accent);
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    font-weight: 700;
+}
+
+#player-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 90%; 
+}
+
+/* Mesajul de așteptare */
+#no-song-message {
+    padding: 20px;
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+/* Stil pentru UI-ul când melodia se redă */
+#current-album-art {
+    width: 100%;
+    max-width: 200px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+}
+
+#current-song-title {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+#player-controls button {
+    background: none;
+    border: none;
+    color: var(--color-text-primary);
+    font-size: 1.2em;
+    padding: 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.1s;
+}
+
+#player-controls button:hover {
+    color: var(--color-main-accent);
+    transform: scale(1.1);
+}
+
+#player-controls button.accent-button {
+    font-size: 1.8em;
+    color: var(--color-main-accent);
+}
+
+@media (min-width: 768px) {
+    .large-grid {
+        /* Fortăm 3 coloane pe toate ecranele de desktop, 
+           suprascriind regula default de 2 coloane (.card-grid) */
+        grid-template-columns: repeat(3, 1fr);
     }
 }
