@@ -358,6 +358,40 @@ body {
     #mobile-bottom-nav {
         display: block; 
     }
+
+    /* === AJUSTĂRI PENTRU OVERLAY-UL DE CĂUTARE PE MOBIL === */
+
+    /* 1. Reducem padding-ul pentru a folosi mai mult spațiu pe orizontală */
+    #global-search-overlay {
+        padding: 15px 20px;
+    }
+
+    /* 2. Asigurăm că navigarea de jos nu este ascunsă de overlay */
+    #app-container.search-active #global-search-overlay {
+        /* Lăsăm un spațiu la baza ecranului, deasupra navigației de jos */
+        height: calc(100% - 60px); 
+        bottom: 60px;
+        top: 0;
+    }
+    
+    /* 3. Ajustăm bara de căutare pentru a arăta mai compact */
+    #search-input-container {
+        padding: 8px 15px; /* Padding mai mic */
+        margin-bottom: 20px;
+    }
+    
+    #global-search-input {
+        font-size: 1em; /* Font mai mic */
+        padding: 5px 10px;
+    }
+    
+    /* 4. Ascundem conținutul principal al paginii (deși acest lucru ar trebui făcut în JS) */
+    #app-container.search-active #content > *:not(#global-search-overlay) {
+        /* Ascunde toate elementele din #content, cu excepția overlay-ului */
+        display: none !important;
+    }
+
+
 }
 
 /* === STILIZARE PROFIL HEADER === */
@@ -637,4 +671,90 @@ body {
            suprascriind regula default de 2 coloane (.card-grid) */
         grid-template-columns: repeat(3, 1fr);
     }
+}
+
+/* === STILURI PENTRU OVERLAY-UL DE CĂUTARE (SUPRAFAȚA) === */
+
+#global-search-overlay {
+    position: absolute; /* Permite suprapunerea peste alte elemente */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-background); /* Fundalul paginii */
+    padding: 20px 40px;
+    z-index: 900; /* Asigură că se suprapune peste conținut, dar sub navigația de jos */
+    
+    /* Ascunde inițial overlay-ul */
+    overflow-y: auto; /* Permite scroll în interiorul overlay-ului dacă rezultatele sunt multe */
+    display: none; 
+    opacity: 0; /* Folosim opacitatea pentru o tranziție mai fină */
+    transition: opacity 0.3s ease;
+}
+
+/* Clasa adăugată de JS pentru a afișa Overlay-ul */
+#app-container.search-active #global-search-overlay {
+    display: block;
+    opacity: 1;
+}
+
+/* === STILURI PENTRU BARĂ ȘI REZULTATE === */
+
+#search-input-container {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-ink-black);
+    border-radius: 50px;
+    padding: 10px 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--color-card-dark);
+}
+
+#global-search-input {
+    flex-grow: 1;
+    border: none;
+    background: transparent;
+    color: var(--color-text-primary);
+    padding: 5px 15px;
+    font-size: 1.1em;
+    outline: none;
+}
+
+#global-search-input::placeholder {
+    color: var(--color-text-primary);
+    opacity: 0.6;
+}
+
+#search-input-container i {
+    color: var(--color-text-primary);
+    opacity: 0.7;
+    font-size: 1.2em;
+}
+
+/* Stil pentru Butonul de închidere */
+#close-search-btn {
+    background: none;
+    border: none;
+    color: var(--color-text-primary);
+    font-size: 1.2em;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+#global-search-results h2 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+.clear-button {
+    background: none;
+    border: none;
+    color: var(--color-text-primary);
+    opacity: 0.8;
+    cursor: pointer;
+    text-align: left;
+    padding: 5px 0;
+    margin-top: 20px;
+    font-size: 0.9em;
 }
