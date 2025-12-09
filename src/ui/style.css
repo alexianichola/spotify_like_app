@@ -1,0 +1,940 @@
+/* Reset de bază */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* === VARIABILE DE CULOARE === */
+:root {
+    --color-background: #121131; /* Deep dark blue */
+    --color-text-primary: #ffeedd;
+    --color-main-accent: #8884ff; /* Soft periwinkle (Accent principal) */
+    --color-card-dark: #1c184c; /* Dark amethyst */
+    --color-hover-accent: #B1AEFF; /* Nuanță mai deschisă de accent */
+    --color-hover: #282828;
+    --aura-color-1: #ffa04e; /* Culoarea aurei (folosit acum portocaliu pentru contrast) */
+    --aura-color-2: #121131; /* Culoarea de fundal, pentru estompare */
+    --color-ink-black: #0C0B20; 
+}
+
+/* === STILURI GLOBALE DE BAZĂ === */
+body {
+    font-family: 'Outfit', sans-serif; 
+    background-color: var(--color-background); 
+    color: var(--color-text-primary);
+    min-height: 100vh;
+    position: relative; 
+    overflow-x: hidden; /* Doar X, pentru a permite scroll vertical */
+    padding: 0;
+    margin: 0;
+    display: block; /* Mod implicit: body este un bloc normal */
+}
+
+/* === IZOLARE: STILURI SPECIFICE PAGINII DE LOGIN === */
+.is-login-page {
+    /* Aplicăm centrare doar pe pagina de login */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; 
+    text-align: center;
+}
+
+/* 1. Definirea Animației de Pulsare (Aura) */
+@keyframes subtle-aura-pulse {
+    0% { transform: scale(1) translate(-50%, -50%); opacity: 0.5; }
+    50% { transform: scale(1.1) translate(-50%, -50%); opacity: 0.9; } 
+    100% { transform: scale(1) translate(-50%, -50%); opacity: 0.5; }
+}
+
+/* 2. Crearea Pseudo-Elementului pentru soft glow (Aplicat doar pe body-ul de login) */
+.is-login-page::before {
+    content: '';
+    position: fixed; 
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    
+    width: 80vh; 
+    height: 80vh;
+    border-radius: 50%; 
+    
+    background: radial-gradient(
+        circle, 
+        var(--aura-color-1) 0%, 
+        var(--aura-color-2) 60%  
+    );
+    
+    filter: blur(80px); 
+    z-index: -1; 
+    
+    animation: subtle-aura-pulse 6s infinite alternate ease-in-out;
+}
+
+
+/* === TITLUL POWERPUFFY (LOGIN) === */
+#main-header {
+    font-size: 2.5em; /* Am menținut dimensiunea mică dorită */
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 30px; 
+    width: 100%; 
+    text-align: center;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2); 
+}
+
+/* === CHENARUL DE LOGIN === */
+#login-main {
+    padding: 40px;
+    background-color: var(--color-card-dark);
+    border-radius: 20px; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7); 
+    
+    max-width: 400px;
+    width: 90%; 
+}
+
+/* === BUTONUL DE LOGIN === */
+#login-button {
+    background-color: var(--color-main-accent);
+    color: var(--color-text-primary);
+    border: none;
+    padding: 15px 30px;
+    margin-top: 20px;
+    border-radius: 50px; 
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s;
+}
+
+#login-button:hover {
+    background-color: var(--color-hover-accent); 
+    transform: scale(1.02); 
+}
+
+#login-button:active {
+    transform: scale(0.98);
+}
+
+
+/* === LAYOUT PRINCIPAL (PROFIL ȘI CĂUTARE) === */
+
+#app-container {
+    display: block; /* Pe mobil, este un bloc normal */
+    min-height: 100vh;
+    height: 100%;
+}
+/* 1. STILUL BAREI LATERALE (DEFAULT - DESCHIS) */
+#sidebar {
+    background-color: var(--color-card-dark);
+    padding: 20px;
+    display: flex; 
+    flex-direction: column;
+    justify-content: space-between; 
+    position: sticky; 
+    top: 0;
+    height: 100vh;
+    transition: width 0.3s ease; /* Adăugăm tranziție pe lățime */
+}
+
+/* 2. BUTONUL DE ASCUNDERE */
+#sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+#sidebar-toggle {
+    background: none;
+    border: none;
+    color: var(--color-text-primary);
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+/* 3. ASCUNDERE TEXTE CÂND SIDEBAR-UL ESTE MIC */
+#sidebar span {
+    transition: opacity 0.3s ease;
+}
+/* Layout Grid pentru Desktop */
+@media (min-width: 768px) {
+    #app-container {
+        display: grid;
+        grid-template-columns: 250px 1fr 300px; 
+    }
+     /* 5. STAREA ASCUNSĂ (SIDEBAR-CLOSED) */
+    #app-container.sidebar-closed {
+        /* Micșorăm sidebar-ul la 80px */
+        grid-template-columns: 80px 1fr 300px; 
+    }
+
+    /* Ascundem titlul SpotiPuff */
+    #app-container.sidebar-closed #sidebar h2 {
+        display: none;
+    }
+    
+    /* Rotește săgeata */
+    #app-container.sidebar-closed #sidebar-toggle {
+        transform: rotate(180deg);
+    }
+    
+    /* Ascundem textele din sidebar (Profile, Search, etc.) */
+    #app-container.sidebar-closed #sidebar span {
+        opacity: 0;
+        width: 0;
+        overflow: hidden;
+    }
+
+    /* Centrare iconițe când sidebar-ul este mic */
+    #app-container.sidebar-closed #main-nav a {
+        padding: 10px 0;
+        justify-content: center;
+    }
+    #app-container.sidebar-closed #main-nav a i {
+        margin: 0;
+    }
+    
+    /* Butonul de Logout (doar iconiță) */
+    #app-container.sidebar-closed #logout-button {
+        padding: 10px;
+        width: 60%;
+        margin: 0 auto;
+    }
+    #app-container.sidebar-closed #logout-button span {
+        display: none;
+    }
+/*aci fac plylist*/
+    #app-container.sidebar-closed #playlists-section h3 {
+        display: none; /* Ascunde titlul "Your Playlists" */
+    }
+    
+    /* Centrează iconițele playlist-urilor când sidebar-ul este mic */
+    #app-container.sidebar-closed #playlists-section a {
+        padding: 10px 0;
+        justify-content: center;
+    }
+    
+    #app-container.sidebar-closed #playlists-section a i {
+        margin: 0;
+    }
+    
+    /* Ascunde textele playlist-urilor */
+    #app-container.sidebar-closed #playlists-section span {
+        opacity: 0;
+        width: 0;
+        overflow: hidden;
+    }
+
+    /*aci nu mai fac plylist*/
+
+    #sidebar {
+        display: block !important; /* Arătăm sidebar-ul pe desktop */
+        background-color: var(--color-card-dark);
+        min-height: 100vh; 
+        height: 100%;
+        padding: 20px 10px;
+    }
+}
+
+/* === STILIZARE SIDEBAR === */
+#sidebar {
+    background-color: var(--color-ink-black); /*un ink black asa*/
+    padding: 20px;
+    display: flex; 
+    flex-direction: column;
+    justify-content: space-between; 
+    position: sticky; 
+    top: 0;
+    height: 100vh; /* Ocupă toată înălțimea */
+}
+
+#sidebar-header h2 {
+    color: var(--aura-color-1);
+    margin-bottom: 30px;
+    font-size: 1.5em;
+    font-weight: 900;
+    text-align: left;
+}
+
+#main-nav {
+    flex-grow: 1; 
+    margin-top: 10px;
+}
+
+#main-nav ul {
+    list-style: none;
+    text-align: left;
+}
+
+.nav-item a {
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: var(--color-text-primary);
+    border-radius: 8px;
+    transition: background-color 0.2s, color 0.2s;
+    font-size: 1.1em;
+}
+
+.nav-item a i {
+    margin-right: 15px; 
+    width: 20px;
+    text-align: center;
+}
+
+.nav-item a:hover {
+    background-color: var(--color-ink-black); 
+    color: var(--aura-color-1);
+}
+
+.nav-item a.active { 
+    background-color: var(--color-main-accent);
+    color: var(--color-card-dark);
+    font-weight: bold;
+}
+
+/* Stil pentru Butonul de Deconectare */
+#utility-links {
+    padding-top: 20px;
+    border-top: 1px solid var(--color-background);
+}
+
+#logout-button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: transparent;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#logout-button:hover {
+    background-color: var(--color-background); 
+}
+
+
+/* === STILIZARE CONȚINUT PRINCIPAL === */
+
+#content {
+    padding: 20px 40px; 
+    overflow-y: auto; 
+    height: 100%;
+}
+
+
+/* === NAVIGAȚIE MOBILĂ ȘI RESPONSIVITATE === */
+
+#mobile-bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-card-dark);
+    padding: 10px 0;
+    box-shadow: 0 -2px 10px #00000080;
+    z-index: 1000;
+}
+
+#mobile-bottom-nav ul {
+    display: flex;
+    justify-content: space-around;
+    list-style: none;
+}
+
+#mobile-bottom-nav a {
+    color: var(--color-text-primary);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.7em;
+    padding: 5px;
+}
+
+#mobile-bottom-nav a i {
+    font-size: 1.5em;
+    margin-bottom: 3px;
+}
+
+/* Regula care activează bara de jos pe ecrane mici */
+@media (max-width: 767px) {
+    #sidebar {
+        display: none !important; 
+    }
+
+    #app-container {
+        grid-template-columns: 1fr;
+    }
+
+    #content {
+        padding-bottom: 70px; 
+    }
+
+    #mobile-bottom-nav {
+        display: block; 
+    }
+
+    /* === AJUSTĂRI PENTRU OVERLAY-UL DE CĂUTARE PE MOBIL === */
+
+    /* 1. Reducem padding-ul pentru a folosi mai mult spațiu pe orizontală */
+    #global-search-overlay {
+        padding: 15px 20px;
+    }
+
+    /* 2. Asigurăm că navigarea de jos nu este ascunsă de overlay */
+    #app-container.search-active #global-search-overlay {
+        /* Lăsăm un spațiu la baza ecranului, deasupra navigației de jos */
+        height: calc(100% - 60px); 
+        bottom: 60px;
+        top: 0;
+    }
+    
+    /* 3. Ajustăm bara de căutare pentru a arăta mai compact */
+    #search-input-container {
+        padding: 8px 15px; /* Padding mai mic */
+        margin-bottom: 20px;
+    }
+    
+    #global-search-input {
+        font-size: 1em; /* Font mai mic */
+        padding: 5px 10px;
+    }
+    
+    /* 4. Ascundem conținutul principal al paginii (deși acest lucru ar trebui făcut în JS) */
+    #app-container.search-active #content > *:not(#global-search-overlay) {
+        /* Ascunde toate elementele din #content, cu excepția overlay-ului */
+        display: none !important;
+    }
+
+
+}
+
+/* === STILIZARE PROFIL HEADER === */
+#profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 30px;
+    margin-bottom: 40px;
+    background: linear-gradient(180deg, rgba(136, 132, 255, 0.1) 0%, rgba(18, 17, 49, 0) 100%);
+    border-radius: 12px;
+    position: relative; /* Adăugat pentru a poziționa ID-ul utilizatorului */
+}
+
+#profile-picture-container img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; 
+    object-fit: cover;
+    box-shadow: 0 0 0 5px var(--color-hover-accent); 
+}
+
+#profile-details h1 {
+    font-size: 2.5em;
+    font-weight: 900;
+    margin: 5px 0;
+    color: var(--color-hover-accent);
+}
+
+.profile-greeting {
+    font-size: 1em;
+    font-weight: 300;
+    opacity: 0.8;
+}
+
+.subtle-text {
+    opacity: 0.6;
+    font-size: 0.9em;
+}
+
+/* === STILIZARE SECȚIUNI ȘI CARDURI === */
+
+.content-section {
+    margin-bottom: 50px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    font-size: 1.8em;
+    font-weight: 600;
+}
+
+.view-all-link {
+    color: var(--color-text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.view-all-link:hover {
+    opacity: 0.8;
+}
+
+/* --- GRID-UL DE CARDURI (RESPONSIVENESS) --- */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px;
+}
+
+@media (min-width: 768px) {
+
+    /*modificata pentru profile ca acolo n am player de muzica*/ 
+    /*#profile-header + .content-section */.card-grid { 
+        grid-template-columns: repeat(5, 1fr); 
+    }
+    .hidden-mobile {
+        display: block !important; 
+    }
+}
+.hidden-mobile {
+    display: none;
+}
+
+/* --- STILIZAREA CARDULUI DE BAZĂ --- */
+
+.music-card {
+    background-color: var(--color-ink-black);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: left;
+    transition: background-color 0.3s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.music-card:hover {
+    background-color: var(--color-background); 
+    transform: translateY(-5px);
+}
+
+/*aci fac play button*/
+.music-card .play-button {
+    position: absolute;
+    bottom: 25px; /* Ajustează poziția verticală */
+    right: 25px;  /* Ajustează poziția orizontală */
+    width: 45px;
+    height: 45px;
+    background-color: var(--color-main-accent); /* Culoarea accentului */
+    border: none;
+    border-radius: 50%;
+    color: var(--color-card-dark); /* Culoarea iconiței (text) */
+    cursor: pointer;
+    opacity: 0; 
+    transform: translateY(10px); /* Ascuns puțin sub card */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    display: flex; /* Pentru a centra iconița */
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+}
+
+/* Afișează butonul la Hover pe Card */
+.music-card:hover .play-button {
+    opacity: 1; 
+    transform: translateY(0);
+}
+
+.music-card .play-button:hover {
+    background-color: var(--color-hover-accent); 
+    transform: scale(1.05);
+}
+
+.music-card .play-button:active {
+    transform: scale(0.95);
+}
+/*aci am fct play button*/
+
+
+.card-image {
+    width: 100%;
+    border-radius: 8px; 
+    margin-bottom: 10px;
+    aspect-ratio: 1 / 1; 
+    object-fit: cover;
+}
+
+.card-title {
+    font-size: 1em;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--color-text-primary);
+}
+
+.card-subtitle {
+    font-size: 0.8em;
+    opacity: 0.6;
+    margin-top: 2px;
+}
+
+.artist-card .card-image {
+    border-radius: 50%;
+}
+
+.card-rank {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 2em;
+    font-weight: 900;
+    color: var(--aura-color-1);
+    opacity: 0.5;
+    line-height: 1;
+}
+
+/* === RESPONSIVENESS SUPLIMENTAR (PROFIL) === */
+
+@media (max-width: 600px) {
+    #profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    #profile-details {
+        text-align: center;
+    }
+    
+    #profile-picture-container img {
+        width: 120px;
+        height: 120px;
+    }
+}
+/* === STILIZARE HEADER PAGINĂ (Toate Paginile Secundare) === */
+.page-header {
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--color-card-dark);
+}
+
+.page-header h1 {
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--color-hover-accent);
+}
+
+.page-header .subtle-text {
+    margin-top: 5px;
+    font-size: 0.9em;
+    opacity: 0.7;
+}
+
+/* Stil pentru grid-urile mari (pe paginile complete de listare) */
+@media (min-width: 1024px) {
+    .large-grid {
+        
+        grid-template-columns: repeat(3, 1fr); 
+    }
+}
+@media (min-width: 1400px) {
+    .large-grid {
+        
+        grid-template-columns: repeat(3, 1fr); 
+    }
+}
+/* === STILIZARE MUSIC PLAYER (COLOANA 3) === */
+
+#music-player-bar {
+    background-color: var(--color-ink-black);
+    padding: 20px;
+    height: 100vh;
+    overflow-y: auto;
+    text-align: center;
+    
+    /* Pe mobil, bara playerului este ascunsă */
+    display: none; 
+}
+
+/* Modificăm layout-ul principal pentru a include playerul */
+@media (min-width: 768px) {
+    /* Reactivăm music player-ul pe desktop */
+    #music-player-bar {
+        display: block; 
+    }
+}
+
+#music-player-bar h3 {
+    color: var(--color-main-accent);
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    font-weight: 700;
+}
+
+#player-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 90%; 
+}
+
+/* Mesajul de așteptare */
+#no-song-message {
+    padding: 20px;
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+/* Stil pentru UI-ul când melodia se redă */
+#current-album-art {
+    width: 100%;
+    max-width: 200px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+}
+
+#current-song-title {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+#player-controls button {
+    background: none;
+    border: none;
+    color: var(--color-text-primary);
+    font-size: 1.2em;
+    padding: 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.1s;
+}
+
+#player-controls button:hover {
+    color: var(--color-main-accent);
+    transform: scale(1.1);
+}
+
+#player-controls button.accent-button {
+    font-size: 1.8em;
+    color: var(--color-main-accent);
+}
+
+@media (min-width: 768px) {
+    .large-grid {
+        /* Fortăm 3 coloane pe toate ecranele de desktop, 
+           suprascriind regula default de 2 coloane (.card-grid) */
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* === STILURI PENTRU OVERLAY-UL DE CĂUTARE (SUPRAFAȚA) === */
+
+#global-search-overlay {
+    position: absolute; /* Permite suprapunerea peste alte elemente */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-background); /* Fundalul paginii */
+    padding: 20px 40px;
+    z-index: 900; /* Asigură că se suprapune peste conținut, dar sub navigația de jos */
+    
+    /* Ascunde inițial overlay-ul */
+    overflow-y: auto; /* Permite scroll în interiorul overlay-ului dacă rezultatele sunt multe */
+    display: none; 
+    opacity: 0; /* Folosim opacitatea pentru o tranziție mai fină */
+    transition: opacity 0.3s ease;
+}
+
+/* Clasa adăugată de JS pentru a afișa Overlay-ul */
+#app-container.search-active #global-search-overlay {
+    display: block;
+    opacity: 1;
+}
+
+/* === STILURI PENTRU BARĂ ȘI REZULTATE === */
+
+#search-input-container {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-ink-black);
+    border-radius: 50px;
+    padding: 10px 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--color-card-dark);
+}
+
+#global-search-input {
+    flex-grow: 1;
+    border: none;
+    background: transparent;
+    color: var(--color-text-primary);
+    padding: 5px 15px;
+    font-size: 1.1em;
+    outline: none;
+}
+
+#global-search-input::placeholder {
+    color: var(--color-text-primary);
+    opacity: 0.6;
+}
+
+#search-input-container i {
+    color: var(--color-text-primary);
+    opacity: 0.7;
+    font-size: 1.2em;
+}
+/*aci ma ocup de clasele de play din search bar*/
+.search-track-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background-color: var(--color-ink-black);
+    transition: background-color 0.2s;
+    position: relative;
+    cursor: pointer;
+}
+
+.search-track-item:hover {
+    background-color: var(--color-background);
+}
+
+.search-track-track-info {
+    flex-grow: 1; /* Ocupă spațiul rămas */
+    margin-left: 15px;
+}
+
+.search-track-title {
+    font-weight: 600;
+}
+
+.search-track-artist {
+    font-size: 0.85em;
+    opacity: 0.6;
+}
+
+/* Stil pentru Butonul de Play de lângă elementul din Căutare */
+.search-track-item .play-button {
+    /* Folosim același stil de buton circular ca la carduri, dar îl facem mai mic și vizibil direct */
+    width: 35px;
+    height: 35px;
+    background-color: var(--color-main-accent);
+    color: var(--color-card-dark);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1em;
+    flex-shrink: 0; /* Nu se micșorează */
+}
+
+/* !!!!!!IMPORTANT: Mock-ul Persoanei C va trebui să genereze HTML-ul de mai jos */
+/* Exemplu de HTML pe care Persoana C ar trebui să îl genereze:
+
+<div class="search-track-item" data-uri="spotify:track:result456">
+    <button class="play-button" data-uri="spotify:track:result456">
+        <i class="fas fa-play"></i>
+    </button>
+    <div class="search-track-track-info">
+        <div class="search-track-title">Mock Track Query</div>
+        <div class="search-track-artist">Mock Artist</div>
+    </div>
+</div>
+*/
+/*aci am terminat clasele pt play din search bar*/
+
+/* Stil pentru Butonul de închidere */
+#close-search-btn {
+    background: none;
+    border: none;
+    color: var(--color-text-primary);
+    font-size: 1.2em;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+#global-search-results h2 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+.clear-button {
+    background: none;
+    border: none;
+    color: var(--color-text-primary);
+    opacity: 0.8;
+    cursor: pointer;
+    text-align: left;
+    padding: 5px 0;
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+/* === STILIZARE SECTIUNE PLAYLISTS (NOU) === */
+
+#playlists-section {
+    flex-grow: 1; /* Permite secțiunii să ocupe spațiul rămas, deasupra Logout-ului */
+    margin-top: 30px; 
+    padding-top: 20px;
+    border-top: 1px solid var(--color-background); /* Separator subtil */
+    overflow-y: auto; /* Permite scroll dacă sunt multe playlist-uri */
+}
+
+#playlists-section h3 {
+    color: var(--color-text-primary);
+    opacity: 0.8;
+    font-size: 0.9em;
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    padding: 0 15px; /* Aliniere cu link-urile */
+}
+
+#playlist-list {
+    list-style: none;
+    text-align: left;
+}
+
+.playlist-item a {
+    /* Folosim stilul de bază al link-urilor din navigație */
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: 5px;
+    text-decoration: none;
+    color: var(--color-text-primary);
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    font-size: 0.95em;
+    display: flex; /* Pentru aliniere */
+    align-items: center;
+}
+
+.playlist-item a i {
+    margin-right: 15px; 
+    width: 20px;
+    text-align: center;
+}
+
+.playlist-item a:hover {
+    background-color: var(--color-ink-black); 
+    color: var(--color-main-accent); /* Schimbăm culoarea la hover */
+}
+
+/* Stil pentru link-ul de creare (pentru a-l evidenția ușor) */
+.playlist-item.create-new a {
+    color: var(--aura-color-1); 
+    font-weight: 600;
+    margin-top: 10px;
+}
