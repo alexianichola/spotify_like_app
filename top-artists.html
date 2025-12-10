@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Top Artists SpotiPuff</title>
 
-    <!-- Link pentru fontul Outfit -->
+    <!-- Font Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
@@ -32,8 +32,7 @@
 
             <nav id="main-nav">
                 <ul>
-                    <li class="nav-item"><a href="profile.html"><i class="fas fa-home"></i> <span>Profile</span></a>
-                    </li>
+                    <li class="nav-item"><a href="profile.html"><i class="fas fa-home"></i> <span>Profile</span></a></li>
                     <li class="nav-item">
                         <a href="#" id="activate-search-btn"><i class="fas fa-search"></i> <span>Search</span></a>
                     </li>
@@ -44,22 +43,14 @@
                 </ul>
             </nav>
 
-            <!-- Aci fac playlisturi-->
-
             <div id="playlists-section">
                 <h3>Your Playlists</h3>
                 <ul id="playlist-list">
-                    <li class="playlist-item"><a href="#"><i class="fas fa-list-ul"></i> <span>Playlist 1</span></a>
-                    </li>
-                    <li class="playlist-item"><a href="#"><i class="fas fa-list-ul"></i> <span>Playlist 2</span></a>
-                    </li>
-
-                    <li class="playlist-item create-new"><a href="#"><i class="fas fa-plus-square"></i> <span>Create
-                                Playlist</span></a></li>
+                    <li class="playlist-item"><a href="#"><i class="fas fa-list-ul"></i> <span>Playlist 1</span></a></li>
+                    <li class="playlist-item"><a href="#"><i class="fas fa-list-ul"></i> <span>Playlist 2</span></a></li>
+                    <li class="playlist-item create-new"><a href="#"><i class="fas fa-plus-square"></i> <span>Create Playlist</span></a></li>
                 </ul>
             </div>
-
-            <!-- aci am terminat playlistu-->
 
             <div id="utility-links">
                 <button id="logout-button" class="accent-button"><i class="fas fa-sign-out-alt"></i>
@@ -67,91 +58,37 @@
             </div>
         </aside>
 
-        <!-- === ZONA DE CONȚINUT PRINCIPAL (ARTISTI) === -->
+        <!-- === ZONA DE CONȚINUT PRINCIPAL === -->
         <main id="content">
-            <!-- Search Bar -->
-            <div id="global-search-overlay">
-                <div id="search-input-container">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="global-search-input" placeholder="What's on your mind?">
-                    <button id="close-search-btn" style="display: none;"><i class="fas fa-times"></i></button>
-                </div>
-
-                <div id="global-search-results">
-                    <h2>Recent searches</h2>
-                    <div id="recent-search-cards">
-                        <p class="subtle-text">Your recent searches are here.</p>
-                    </div>
-
-                    <h2 style="margin-top: 30px;">Live Results</h2>
-                    <div id="search-results-list">
-                        <p class="subtle-text">write min. 3 characters</p>
-                    </div>
-                    <button class="clear-button subtle-text">Delete recent searches</button>
-                </div>
-            </div>
-
+            
+            <!-- HEADER PAGINĂ -->
             <header class="page-header">
                 <h1>You listened, we counted, your top artists are here</h1>
             </header>
 
-            <!-- Grid-ul va afișa 2 coloane (din CSS-ul actualizat) -->
-            <section id="full-top-artists-list" class="card-grid large-grid">
-                <!-- PLACEHOLDERS: Artiști (6 în total, 2 coloane x 3 rânduri) -->
-                <div class="music-card artist-card"><span class="card-rank">1</span><img
-                        src="https://placehold.co/150x150/4C468E/FFeedd?text=A1" class="card-image" alt="Artist 1">
-                    <h4 class="card-title">Genre</h4>
-                    <p class="card-subtitle">Artist</p>
-                </div>
-                <div class="music-card artist-card"><span class="card-rank">2</span><img
-                        src="https://placehold.co/150x150/4C468E/FFeedd?text=A2" class="card-image" alt="Artist 2">
-                    <h4 class="card-title">Genre</h4>
-                    <p class="card-subtitle">Artist</p>
-                </div>
-                <div class="music-card artist-card"><span class="card-rank">3</span><img
-                        src="https://placehold.co/150x150/4C468E/FFeedd?text=A3" class="card-image" alt="Artist 3">
-                    <h4 class="card-title">Genre</h4>
-                    <p class="card-subtitle">Artist</p>
-                </div>
-                <div class="music-card artist-card"><span class="card-rank">4</span><img
-                        src="https://placehold.co/150x150/4C468E/FFeedd?text=A4" class="card-image" alt="Artist 4">
-                    <h4 class="card-title">Genre</h4>
-                    <p class="card-subtitle">Artist</p>
-                </div>
-                <div class="music-card artist-card"><span class="card-rank">5</span><img
-                        src="https://placehold.co/150x150/4C468E/FFeedd?text=A5" class="card-image" alt="Artist 5">
-                    <h4 class="card-title">Genre</h4>
-                    <p class="card-subtitle">Artist</p>
-                </div>
-                <div class="music-card artist-card"><span class="card-rank">6</span><img
-                        src="https://placehold.co/150x150/4C468E/FFeedd?text=A6" class="card-image" alt="Artist 6">
-                    <h4 class="card-title">Genre</h4>
-                    <p class="card-subtitle">Artist</p>
-                </div>
+            <!-- AICI AM CORECTAT ID-ul CA SĂ CORESPUNDĂ CU APP.JS -->
+            <section id="top-artists-grid" class="card-grid large-grid">
+                <!-- Aici va injecta JS-ul artiștii -->
             </section>
+            
         </main>
 
-        <!-- === COLOANA 3: MUSIC PLAYER (Redare Melodie) === -->
+        <!-- === MUSIC PLAYER === -->
         <aside id="music-player-bar">
             <h3>Song Player</h3>
             <div id="player-content">
-                <!-- Mesaj când nicio melodie nu este redată -->
                 <div id="no-song-message">
                     <i class="fas fa-headphones-alt fa-3x" style="color: var(--color-main-accent);"></i>
                     <p class="subtle-text" style="margin-top: 15px;">Looking for a song to play...</p>
                 </div>
-
-                <!-- Aici va fi UI-ul playerului (ascuns inițial) -->
+                <!-- Player UI -->
                 <div id="song-playing-ui" style="display: none;">
-                    <img id="current-album-art" src="https://placehold.co/200x200/1C184C/FFeedd?text=Album"
-                        alt="Album Art">
+                    <img id="current-album-art" src="https://placehold.co/200x200" alt="Album Art">
                     <h4 id="current-song-title">Song title</h4>
                     <p id="current-artist-name" class="subtle-text">Artist</p>
                     <div id="player-controls">
                         <button data-action="previous"><i class="fas fa-step-backward"></i></button>
-
                         <button class="accent-button" data-action="pause"><i class="fas fa-play"></i></button>
-
                         <button data-action="next"><i class="fas fa-step-forward"></i></button>
                     </div>
                 </div>
@@ -160,18 +97,28 @@
 
     </div>
 
-    <!-- Navigația de Jos (Mobile) - Rămâne neschimbată -->
+    <!-- Navigația Mobile -->
     <nav id="mobile-bottom-nav">
         <ul>
             <li><a href="profile.html"><i class="fas fa-home"></i> Profile</a></li>
-            <li>
-                <a href="#" id="activate-search-btn-mobile"><i class="fas fa-search"></i> Search </a>
-            </li>
+            <li><a href="#" id="activate-search-btn-mobile"><i class="fas fa-search"></i> Search </a></li>
             <li><a href="top-artists.html" class="active"><i class="fas fa-palette"></i> Artists</a></li>
             <li><a href="top-albums.html"><i class="fas fa-compact-disc"></i> Albums</a></li>
         </ul>
     </nav>
 
-</body>
+    <!-- === SEARCH OVERLAY (MUTAT JOS CA SĂ MEARGĂ) === -->
+    <div id="global-search-overlay">
+        <div id="search-input-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="global-search-input" placeholder="What's on your mind?">
+            <button id="close-search-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <!-- Containerul pentru rezultate va fi generat dinamic de JS -->
+    </div>
 
+    <!-- === IMPORTANȚĂ MAXIMĂ: SCRIPTUL! === -->
+    <script type="module" src="app.js"></script>
+
+</body>
 </html>
