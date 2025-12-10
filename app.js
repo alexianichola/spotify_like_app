@@ -48,39 +48,48 @@ function setupSearch(token) {
     
     const searchOverlay = document.getElementById('global-search-overlay');
     const searchInput = document.getElementById('global-search-input');
-    const resultsContainer = document.getElementById('search-results-list');
     
-    // NOU: Selectăm și containerul părinte care poate fi ascuns
-    const resultsWrapper = document.getElementById('global-search-results');
-
+    // NU mai folosim containerul vechi care face probleme.
+    // Vom crea unul nou dinamic sau îl folosim pe cel existent dacă l-am creat deja.
+    let resultsContainer = document.getElementById('dynamic-search-results');
+    
+    // Funcția de deschidere
     const openSearch = (e) => {
         if(e) e.preventDefault();
-        console.log("Deschid fereastra...");
-
         if (searchOverlay) {
             // 1. Vizibilitate Overlay
             searchOverlay.style.display = 'block';
+            searchOverlay.style.backgroundColor = '#121131'; 
+            searchOverlay.style.zIndex = '99999';
+            searchOverlay.style.opacity = '1'; 
             searchOverlay.style.position = 'fixed';
             searchOverlay.style.top = '0';
             searchOverlay.style.left = '0';
             searchOverlay.style.width = '100vw';
             searchOverlay.style.height = '100vh';
-            searchOverlay.style.backgroundColor = '#121131'; 
-            searchOverlay.style.zIndex = '99999';
-            searchOverlay.style.opacity = '1'; 
 
-            // 2. Vizibilitate Container Rezultate (ASTA LIPSEA!)
-            if (resultsWrapper) {
-                resultsWrapper.style.display = 'block';
-                resultsWrapper.style.visibility = 'visible';
-                resultsWrapper.style.opacity = '1';
-            }
-
-            // 3. Focus Input
+            // 2. Focus Input
             if(searchInput) {
                 searchInput.value = ''; 
                 searchInput.focus();
                 searchInput.style.color = 'white'; 
+            }
+
+            // 3. Creăm containerul nostru sigur (dacă nu există)
+            if (!document.getElementById('dynamic-search-results')) {
+                resultsContainer = document.createElement('div');
+                resultsContainer.id = 'dynamic-search-results';
+                // Îl stilizăm să fim SIGURI că se vede
+                resultsContainer.style.marginTop = '20px';
+                resultsContainer.style.width = '100%';
+                resultsContainer.style.color = 'white';
+                
+                // Îl adăugăm în overlay, imediat după input container
+                const inputContainer = document.getElementById('search-input-container');
+                inputContainer.parentNode.insertBefore(resultsContainer, inputContainer.nextSibling);
+            } else {
+                resultsContainer = document.getElementById('dynamic-search-results');
+                resultsContainer.innerHTML = '';
             }
         }
     };
@@ -94,17 +103,24 @@ function setupSearch(token) {
     if (searchBtnMobile) searchBtnMobile.addEventListener('click', openSearch);
     if (closeBtn) closeBtn.addEventListener('click', closeSearch);
 
-    if (searchInput && resultsContainer) {
+    if (searchInput) {
         let timeoutId;
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value;
-            if(query.length === 0) { resultsContainer.innerHTML = ''; return; }
+            // Ne asigurăm că avem unde să afișăm
+            if (!resultsContainer) resultsContainer = document.getElementById('dynamic-search-results');
+            
+            if(query.length === 0) { 
+                 if(resultsContainer) resultsContainer.innerHTML = ''; 
+                 return; 
+            }
             clearTimeout(timeoutId);
             timeoutId = setTimeout(async () => {
                 if (query.length >= 2) {
                     try {
                         const results = await search(token, query);
-                        renderSearchResults(results, resultsContainer);
+                        // Apelează funcția de randare direct aici
+                        renderDynamicResults(results, resultsContainer);
                     } catch (error) { console.error(error); }
                 }
             }, 500);
@@ -114,90 +130,42 @@ function setupSearch(token) {
 
 // --- ÎNLOCUIEȘTE DOAR FUNCȚIA renderSearchResults ---
 
-function renderSearchResults(data, container) {
-    // 1. Verificăm în consolă ce a trimis Spotify
-    console.log("📦 DATE PRIMITE DE LA SPOTIFY:", data);
-
+function renderDynamicResults(data, container) {
+    if(!container) return;
     container.innerHTML = ''; 
-    
-    // 2. FORȚĂM stilurile containerului
-    container.style.display = 'block';
-    container.style.marginTop = '20px';
-    container.style.color = '#00FF00'; // Verde strident (Matrix style) ca să se vadă!
-    container.style.zIndex = '999999';
 
-    if (!data) {
-        container.innerHTML = '<p>Eroare: Nu am primit date.</p>';
-        return;
-    }
+    if (!data) return;
 
-    // Verificăm dacă există tracks
-    const hasTracks = data.tracks && data.tracks.items && data.tracks.items.length > 0;
-    const hasArtists = data.artists && data.artists.items && data.artists.items.length > 0;
-
-    if (!hasTracks && !hasArtists) {
-        container.innerHTML = '<p style="color:white; font-size:1.2em;">⚠️ Spotify a răspuns, dar lista e goală.</p>';
-        return;
-    }
-
-    // A. TRACKS
-    if (hasTracks) {
-        container.innerHTML += `<h3 style="color:#8884ff; border-bottom:1px solid #555; padding-bottom:5px;">Songs</h3>`;
-        
+    // Tracks
+    if (data.tracks?.items.length > 0) {
+        container.innerHTML += `<h3 style="color:#8884ff; margin: 20px 0 10px 0;">Songs</h3>`;
         data.tracks.items.slice(0, 5).forEach(track => {
-            // Verificăm imaginile
-            const img = (track.album.images && track.album.images.length > 0) 
-                        ? track.album.images[0].url 
-                        : 'https://placehold.co/50';
-
+            const img = track.album.images[2]?.url || track.album.images[0]?.url;
             const html = `
-                <div class="search-track-item" style="margin: 10px 0; background: #222; padding: 10px; border-radius: 5px; display:flex; align-items:center;">
-                    <button class="play-button" data-uri="${track.uri}" style="margin-right:15px; padding:10px; background:green; border:none; border-radius:50%; cursor:pointer;">
-                        ▶
-                    </button>
-                    <img src="${img}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 15px;">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                    <img src="${img}" style="width: 50px; height: 50px; border-radius: 4px;">
                     <div>
-                        <div style="color: white; font-weight: bold; font-size: 1.1em;">${track.name}</div>
-                        <div style="color: #ccc;">${track.artists[0].name}</div>
+                        <div style="font-weight: bold;">${track.name}</div>
+                        <div style="font-size: 0.85em; opacity: 0.7;">${track.artists[0].name}</div>
                     </div>
                 </div>`;
             container.innerHTML += html;
         });
     }
 
-    // B. ARTISTS
-    if (hasArtists) {
-        container.innerHTML += `<h3 style="color:#8884ff; margin-top:20px;">Artists</h3>`;
+    // Artists
+    if (data.artists?.items.length > 0) {
+        container.innerHTML += `<h3 style="color:#8884ff; margin: 20px 0 10px 0;">Artists</h3>`;
         data.artists.items.slice(0, 3).forEach(artist => {
-            const img = (artist.images && artist.images.length > 0) 
-                        ? artist.images[0].url 
-                        : 'https://placehold.co/50';
-            
+            const img = artist.images[0]?.url || 'https://placehold.co/50';
             const html = `
-                <div style="margin: 10px 0; background: #222; padding: 10px; border-radius: 5px; display:flex; align-items:center;">
-                    <img src="${img}" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px;">
-                    <div style="color: white; font-weight: bold;">${artist.name}</div>
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 50px;">
+                    <img src="${img}" style="width: 50px; height: 50px; border-radius: 50%;">
+                    <div style="font-weight: bold;">${artist.name}</div>
                 </div>`;
             container.innerHTML += html;
         });
     }
-}
-
-// --- 5. LOGICA DATE PROFIL ---
-async function loadProfileData(token) {
-    try {
-        const user = await getUserProfile(token);
-        if(user){
-            document.getElementById('user-display-name').innerText = user.display_name;
-            document.getElementById('user-email-address').innerText = user.email;
-            document.getElementById('user-id-display').innerText = `ID: ${user.id}`;
-            if (user.images?.length > 0) document.getElementById('user-profile-image').src = user.images[0].url;
-        }
-        const artistsData = await getTopArtists(token, 5);
-        renderTopArtists(artistsData.items);
-        const albumsData = await getTopAlbums(token, 5);
-        renderTopAlbums(albumsData.items);
-    } catch (error) { console.error(error); }
 }
 
 function renderTopArtists(artists) {
