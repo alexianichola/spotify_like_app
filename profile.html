@@ -80,19 +80,7 @@
                     <button id="close-search-btn" style="display: none;"><i class="fas fa-times"></i></button>
                 </div>
 
-                <div id="global-search-results">
-                    <h2>Recent searches</h2>
-                    <div id="recent-search-cards">
-                        <p class="subtle-text">Your recent searches are here.</p>
-                    </div>
-
-                    <h2 style="margin-top: 30px;">Live Results</h2>
-                    <div id="search-results-list">
-                        <p class="subtle-text">write min. 3 characters</p>
-                    </div>
-                    <button class="clear-button subtle-text">Delete recent searches</button>
-                </div>
-            </div>
+                
 
             <!-- === 1. PROFIL HEADER (Nume, Poza, Email) === -->
             <header id="profile-header">
@@ -305,6 +293,23 @@
             <li><a href="top-albums.html"><i class="fas fa-compact-disc"></i> Albums</a></li>
         </ul>
     </nav>
+
+     <!-- AICI trebuie să fie Search-ul acum (scos din main) -->
+    <div id="global-search-overlay">
+        <div id="search-input-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="global-search-input" placeholder="What's on your mind?">
+            <button id="close-search-btn"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div id="global-search-results">
+            <div id="search-results-list">
+                <p class="subtle-text">write min. 3 characters</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
 
 
 </body>

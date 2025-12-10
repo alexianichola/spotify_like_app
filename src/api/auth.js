@@ -25,6 +25,7 @@ export async function login() {
     scope: SCOPES,
     redirect_uri: REDIRECT_URI,
     state: state,
+    show_dialog: true 
   };
 
   // 3. Construim și efectuăm redirecționarea

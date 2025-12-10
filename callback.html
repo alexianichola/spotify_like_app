@@ -1,28 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Spotify Callback</title>
-  </head>
-  <body>
-    <script type="module">
-      import { getToken } from "./src/api/auth.js";
-      // extragem tot ce se afla dupa ?
-      const params = new URLSearchParams(window.location.search);
-      //extragem codul de dupa cuvantul code
-      const code = params.get("code");
+<head>
+    <meta charset="UTF-8">
+    <title>Processing Login...</title>
+    <style>
+        body { background-color: #121212; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
+    </style>
+</head>
+<body>
+    <h2>Connecting to Spotify...</h2>
+    <p>Please wait while we secure your connection.</p>
 
-      if (code) {
-        getToken(code).then((token) => {
-          localStorage.setItem("spotifyToken", token);
-          //salvare in memorie a token ului sub o denumire
-          alert("Login reușit!");
-          // optional: redirecționezi înapoi la index.html
-          window.location = "./src/ui/index.html";
-        });
-      } else {
-        alert("Nu s-a primit codul OAuth!");
-      }
+    <script type="module">
+        // Importăm funcția colegei care transformă Codul în Token
+        import { getToken } from './src/api/auth.js';
+
+        async function handleLogin() {
+            // 1. Căutăm codul în URL (partea cu ?code=...)
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+
+            if (code) {
+                try {
+                    // 2. Schimbăm codul pe token (folosind funcția din auth.js)
+                    const token = await getToken(code);
+                    
+                    // 3. Salvăm token-ul real
+                    localStorage.setItem('access_token', token);
+                    
+                    // 4. Redirect la pagina principală
+                    console.log("Token obținut cu succes!");
+                    window.location.href = 'index.html'; 
+                    
+                } catch (error) {
+                    console.error("Eroare la schimbul de token:", error);
+                    document.body.innerHTML += `<br><p style="color:red">Error: ${error.message}</p>`;
+                }
+            } else {
+                console.error("Nu am găsit codul în URL.");
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Pornim procesul
+        handleLogin();
     </script>
-  </body>
+</body>
 </html>
