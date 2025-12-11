@@ -1,10 +1,8 @@
 async function fetchSpotify(token, endpoint) {
-
   const baseUrl = "https://api.spotify.com/v1/";
   const cleanEndpoint = endpoint.trim();
   const url = baseUrl + (cleanEndpoint.startsWith('/') ? cleanEndpoint.substring(1) : cleanEndpoint);
   
-  // console.log("🌐 Fetching:", url); 
   console.log("Fetching URL:", url);
   const response = await fetch(url, {
     headers: { Authorization: "Bearer " + token },
@@ -48,20 +46,10 @@ export async function search(token, query) {
   return fetchSpotify(token, `search?q=${safeQuery}&type=artist,track,album&limit=10`);
 }
 
-// src/api/spotifyAPI.js
-
 export async function getRecommendations(token, seedArtistsIds, limit = 5) {
   if (!seedArtistsIds) return null;
-
   const mainArtistId = seedArtistsIds.split(',')[0].trim();
-
-  // --- MODIFICARE PENTRU STABILITATE ---
-  // Endpoint-ul de "recommendations" dă erori 404 inexplicabile.
-  // Folosim endpoint-ul "Top Tracks" al artistului. 
-  // Acesta funcționează 100% și returnează același format de date ({ tracks: [...] }).
-  
   const endpoint = `artists/${mainArtistId}/top-tracks?market=RO`;
-  
   return fetchSpotify(token, endpoint);
 }
 
@@ -69,7 +57,6 @@ export async function getUserPlaylists(token) {
     return fetchSpotify(token, `me/playlists?limit=20`); 
 }
 
-// 2. Creează un playlist nou
 export async function createPlaylist(token, userId, playlistName) {
     const url = `https://api.spotify.com/v1/users/${userId}/playlists`;
     
@@ -82,7 +69,7 @@ export async function createPlaylist(token, userId, playlistName) {
         body: JSON.stringify({
             name: playlistName,
             description: "Created via SpotiPuff App",
-            public: false // Le facem private implicit
+            public: false
         })
     });
 
@@ -90,4 +77,46 @@ export async function createPlaylist(token, userId, playlistName) {
         throw new Error("Eroare la crearea playlist-ului");
     }
     return response.json();
+}
+
+// === FUNCȚII NOI PENTRU ADD TO PLAYLIST ===
+
+// Obține toate track-urile dintr-un album
+export async function getAlbumTracks(token, albumId) {
+    return fetchSpotify(token, `albums/${albumId}/tracks?limit=50`);
+}
+
+// Obține top tracks ale unui artist
+export async function getArtistTopTracks(token, artistId) {
+    return fetchSpotify(token, `artists/${artistId}/top-tracks?market=RO`);
+}
+
+// Adaugă track-uri într-un playlist
+export async function addTracksToPlaylist(token, playlistId, trackUris) {
+    const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+    
+    // Spotify permite max 100 tracks per request
+    const chunks = [];
+    for (let i = 0; i < trackUris.length; i += 100) {
+        chunks.push(trackUris.slice(i, i + 100));
+    }
+    
+    for (const chunk of chunks) {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                Authorization: "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                uris: chunk
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Eroare la adăugarea track-urilor: ${response.status}`);
+        }
+    }
+    
+    return true;
 }

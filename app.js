@@ -1,5 +1,5 @@
 import { login } from './src/api/auth.js';
-import { getUserProfile, getTopArtists, getTopAlbums, search, getRecommendations, getUserPlaylists, createPlaylist } 
+import { getUserProfile, getTopArtists, getTopAlbums, search, getRecommendations, getUserPlaylists, createPlaylist, getAlbumTracks, getArtistTopTracks, addTracksToPlaylist } 
 from './src/api/spotifyAPI.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -47,33 +47,64 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     document.body.addEventListener('click', (e) => {
+        // === PLAY BUTTON HANDLER ===
         const btn = e.target.closest('.play-button');
+        
         if (btn) {
             e.preventDefault();
+            e.stopPropagation();
+            
             const uri = btn.dataset.uri; 
             
+            console.log("🎵 Click detected on play button");
+            console.log("📀 URI:", uri);
+            
             if (uri) {
-                console.log("Play la:", uri);
                 const parts = uri.split(':');
                 const type = parts[1]; 
                 const id = parts[2];
+                
+                console.log(`✅ Playing ${type} with ID: ${id}`);
+                
                 const playerContainer = document.getElementById('player-content');
                 if (playerContainer) {
                     const embedUrl = `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
+                    
                     playerContainer.innerHTML = `
                         <h3 style="color: #8884ff; margin-bottom: 15px;">Now Playing</h3>
                         <iframe style="border-radius:12px" src="${embedUrl}" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                         <button id="close-player" style="margin-top:10px; background:none; border:1px solid #555; color:white; padding:5px 10px; border-radius:20px; cursor:pointer;">Close Player</button>
                     `;
+                    
                     document.getElementById('close-player').addEventListener('click', () => {
                         playerContainer.innerHTML = `<div id="no-song-message"><i class="fas fa-headphones-alt fa-3x" style="color: var(--color-main-accent);"></i><p class="subtle-text" style="margin-top: 15px;">Looking for a song to play...</p></div>`;
                     });
 
-                    // Ascundem search-ul dacă dăm play din search
                     const searchOverlay = document.getElementById('global-search-overlay');
                     if(searchOverlay) searchOverlay.style.display = 'none';
+                } else {
+                    console.error("❌ Nu găsesc elementul 'player-content'");
                 }
+            } else {
+                console.error("❌ Butonul nu are atributul data-uri!");
+                console.log("Butonul problematic:", btn);
             }
+        }
+
+        // === ADD TO PLAYLIST BUTTON HANDLER ===
+        const addBtn = e.target.closest('.add-to-playlist-btn');
+        
+        if (addBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const type = addBtn.dataset.type; // "artist" sau "album"
+            const id = addBtn.dataset.id;
+            const name = addBtn.dataset.name;
+            
+            console.log(`➕ Add to playlist: ${type} - ${name}`);
+            
+            handleAddToPlaylist(type, id, name);
         }
     });
 });
@@ -166,9 +197,6 @@ function renderDynamicResults(data, container) {
 }
 
 // --- ÎNCĂRCARE DATE PROFIL & RECOMANDĂRI ---
-// --- FUNCȚIA COMPLETĂ PENTRU PROFIL + RECOMANDĂRI ---
-// --- FUNCȚIA DE PROFIL UPGRADATĂ ---
-
 async function loadProfileData(token) {
     try {
         const user = await getUserProfile(token);
@@ -178,13 +206,12 @@ async function loadProfileData(token) {
             const nameEl = document.getElementById('user-display-name');
             if(nameEl) {
                 nameEl.innerText = user.display_name;
-                nameEl.classList.remove('skeleton', 'skeleton-text'); // <--- IMPORTANT
+                nameEl.classList.remove('skeleton', 'skeleton-text');
             }
 
             // 2. Email
-           const emailEl = document.getElementById('user-email-address');
+            const emailEl = document.getElementById('user-email-address');
             if(emailEl) {
-                // Dacă nu avem email, nu afișăm "undefined", ci un text gol sau ID-ul
                 emailEl.innerText = user.email || ''; 
                 emailEl.classList.remove('skeleton', 'skeleton-text');
             }
@@ -192,19 +219,12 @@ async function loadProfileData(token) {
             // 3. Poza
             const imgEl = document.getElementById('user-profile-image');
             if (imgEl) {
-                // Verificăm dacă userul are imagini de la Spotify
                 if (user.images && user.images.length > 0) {
                     imgEl.src = user.images[0].url;
                 } else {
-                    // Dacă NU are poză, creăm una cu inițiala
-                    // Luăm prima literă din nume (ex: S de la SpotiPuff)
                     const initial = user.display_name ? user.display_name.charAt(0).toUpperCase() : '?';
-                    
-                    // Generăm link-ul: 150x150, Fundal Mov (#8884ff), Text Albastru Închis (#121131)
                     imgEl.src = `https://placehold.co/150x150/8884ff/121131?text=${initial}`;
                 }
-                
-                // Scoatem efectul de încărcare (skeleton)
                 imgEl.classList.remove('skeleton'); 
             }
             
@@ -213,7 +233,7 @@ async function loadProfileData(token) {
             if(followEl) {
                 followEl.innerHTML = `<i class="fas fa-users"></i> ${user.followers.total} Followers`;
                 followEl.classList.remove('skeleton');
-                followEl.style.backgroundColor = "rgba(255,255,255,0.1)"; // Resetăm culoarea
+                followEl.style.backgroundColor = "rgba(255,255,255,0.1)";
                 followEl.style.color = "white";
             }
 
@@ -225,9 +245,10 @@ async function loadProfileData(token) {
                 prodEl.style.color = '#121131';
             }
 
-            //init PLaylists
-           // await setupPlaylists(token, user.id);
+            // ✅ AICI E FIX-UL - APELĂM FUNCȚIA DE PLAYLIST
+            await setupPlaylists(token, user.id);
         }
+        
         // --- Încărcare Liste ---
         const artistsData = await getTopArtists(token, 5);
         renderTopArtists(artistsData.items);
@@ -235,24 +256,18 @@ async function loadProfileData(token) {
         const albumsData = await getTopAlbums(token, 5);
         renderTopAlbums(albumsData.items);
 
-    if (artistsData.items.length > 0) {
-        // Luăm ID-ul celui mai ascultat artist
-        const topArtist = artistsData.items[0];
-        
-        console.log("Generare recomandări bazate pe artistul:", topArtist.name);
-
-        // Cerem recomandări
-        const recommendations = await getRecommendations(token, topArtist.id, 5);
-        
-        // Randăm rezultatele dacă există
-        if (recommendations && recommendations.tracks) {
-            renderRecommendations(recommendations.tracks);
+        if (artistsData.items.length > 0) {
+            const topArtist = artistsData.items[0];
+            console.log("Generare recomandări bazate pe artistul:", topArtist.name);
+            const recommendations = await getRecommendations(token, topArtist.id, 5);
+            
+            if (recommendations && recommendations.tracks) {
+                renderRecommendations(recommendations.tracks);
+            }
+        } else {
+            document.getElementById('recommendations-grid').innerHTML = 
+                '<p class="subtle-text">Ascultă niște muzică pentru a primi recomandări!</p>';
         }
-    } else {
-        // Fallback dacă userul e nou și nu are top artists
-        document.getElementById('recommendations-grid').innerHTML = 
-            '<p class="subtle-text">Ascultă niște muzică pentru a primi recomandări!</p>';
-    }
 
     } catch (error) { 
         console.error("Eroare loadProfile:", error); 
@@ -263,8 +278,6 @@ async function loadProfileData(token) {
         }
     }
 }
-
-// La finalul fișierului app.js
 
 function renderRecommendations(tracks) {
     const container = document.getElementById('recommendations-grid');
@@ -277,31 +290,43 @@ function renderRecommendations(tracks) {
     }
 
     tracks.forEach((track, index) => {
-        // Imaginea albumului (fallback dacă nu există)
         const img = track.album.images[0]?.url || 'https://placehold.co/150';
+        const trackUri = track.uri || `spotify:track:${track.id}`;
         
-        // Construim HTML-ul similar cu Top Albums/Artists pentru consistență vizuală
         const html = `
-            <div class="music-card recommendation-card">
-                <!-- Putem pune un mic badge de "Picked" opțional -->
-                <div style="position: absolute; top:10px; left:10px; background:#8884ff; color:#121131; padding:2px 8px; border-radius:10px; font-size:0.7em; font-weight:bold;">
+            <div class="music-card recommendation-card" style="position: relative;">
+                <div style="position: absolute; top:10px; left:10px; background:#8884ff; color:#121131; padding:4px 10px; border-radius:12px; font-size:0.7em; font-weight:bold; z-index:2;">
                     <i class="fas fa-magic"></i> Pick
                 </div>
-
-                <img src="${img}" class="card-image" alt="${track.name}">
                 
+                <img src="${img}" class="card-image" alt="${track.name}">
                 <h4 class="card-title">${track.name}</h4>
                 <p class="card-subtitle">${track.artists[0].name}</p>
                 
-                <!-- Butonul de Play funcțional -->
-                <button class="play-button" data-uri="${track.uri}">
-                    <i class="fas fa-play"></i>
-                </button>
+                <!-- Butoane în partea de jos -->
+                <div style="position: absolute; bottom: 15px; right: 15px; display: flex; gap: 10px; z-index: 3;">
+                    <button class="add-to-playlist-btn" 
+                            data-type="track" 
+                            data-id="${track.id}" 
+                            data-name="${track.name}"
+                            data-uri="${trackUri}"
+                            style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.9); border: none; color: #121131; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"
+                            title="Add to Playlist">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button class="play-button" data-uri="${trackUri}" 
+                        style="width: 50px; height: 50px; border-radius: 50%; background: #8884ff; border: none; color: #121131; font-size: 1.2em; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(136, 132, 255, 0.4); transition: all 0.3s ease;">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
             </div>
         `;
         container.innerHTML += html;
     });
+    
+    console.log(`✅ Rendered ${tracks.length} recommendations with play buttons`);
 }
+
 function renderTopArtists(artists) {
     const container = document.getElementById('top-artists-grid');
     if(!container) return;
@@ -309,12 +334,26 @@ function renderTopArtists(artists) {
     artists.forEach((artist, index) => {
         const img = artist.images[0]?.url || 'https://placehold.co/150';
         container.innerHTML += `
-            <div class="music-card artist-card">
+            <div class="music-card artist-card" style="position: relative;">
                 <span class="card-rank">${index + 1}</span>
                 <img src="${img}" class="card-image">
                 <h4 class="card-title">${artist.name}</h4>
                 <p class="card-subtitle">Artist</p>
-                <button class="play-button" data-uri="${artist.uri}"><i class="fas fa-play"></i></button>
+                
+                <!-- Butoane în partea de jos -->
+                <div style="position: absolute; bottom: 15px; right: 15px; display: flex; gap: 10px; z-index: 3;">
+                    <button class="add-to-playlist-btn" 
+                            data-type="artist" 
+                            data-id="${artist.id}" 
+                            data-name="${artist.name}"
+                            style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.9); border: none; color: #121131; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"
+                            title="Add to Playlist">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button class="play-button" data-uri="${artist.uri}" style="width: 50px; height: 50px;">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
             </div>`;
     });
 }
@@ -326,29 +365,50 @@ function renderTopAlbums(albums) {
     albums.forEach((album, index) => {
         const img = album.images[0]?.url || 'https://placehold.co/150';
         container.innerHTML += `
-            <div class="music-card album-card">
+            <div class="music-card album-card" style="position: relative;">
                 <span class="card-rank">${index + 1}</span>
                 <img src="${img}" class="card-image">
                 <h4 class="card-title">${album.name}</h4>
                 <p class="card-subtitle">${album.artists[0].name}</p>
-                <button class="play-button" data-uri="${album.uri}"><i class="fas fa-play"></i></button>
+                
+                <!-- Butoane în partea de jos -->
+                <div style="position: absolute; bottom: 15px; right: 15px; display: flex; gap: 10px; z-index: 3;">
+                    <button class="add-to-playlist-btn" 
+                            data-type="album" 
+                            data-id="${album.id}" 
+                            data-name="${album.name}"
+                            style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.9); border: none; color: #121131; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"
+                            title="Add to Playlist">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button class="play-button" data-uri="${album.uri}" style="width: 50px; height: 50px;">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
             </div>`;
     });
 }
 
-// --- FUNCȚII PLAYLIST ---
+// --- FUNCȚII PLAYLIST (UPGRADED) ---
 async function setupPlaylists(token, userId) {
-    // 1. Schimbăm ținta: căutăm containerul din interiorul listei
     const listContainer = document.getElementById('dynamic-playlists-container');
     const createBtn = document.getElementById('create-playlist-btn');
 
+    if (!listContainer) {
+        console.warn("⚠️ Nu găsesc elementul 'dynamic-playlists-container' în HTML!");
+        return;
+    }
+
+    // Funcție helper pentru a reîncărca lista
     const renderList = async () => {
         try {
+            listContainer.innerHTML = '<li style="color:#999; padding:10px;">Loading playlists...</li>';
+            
             const data = await getUserPlaylists(token);
-            if (data && data.items) {
+            
+            if (data && data.items && data.items.length > 0) {
                 listContainer.innerHTML = ''; 
                 data.items.forEach(playlist => {
-                    // Păstrăm clasa 'playlist-item' ca să arate la fel ca în design
                     const html = `
                         <li class="playlist-item">
                             <a href="${playlist.external_urls.spotify}" target="_blank">
@@ -359,29 +419,116 @@ async function setupPlaylists(token, userId) {
                     `;
                     listContainer.innerHTML += html;
                 });
+            } else {
+                listContainer.innerHTML = '<li style="color:#999; padding:10px;">No playlists yet. Create one!</li>';
             }
         } catch (e) {
-            console.error("Eroare playlist-uri:", e);
+            console.error("Eroare la încărcarea playlist-urilor:", e);
+            listContainer.innerHTML = '<li style="color:red; padding:10px;">Error loading playlists</li>';
         }
     };
 
+    // Încarcă lista inițial
     await renderList();
 
-    // Logica de creare rămâne aceeași
-    if (createBtn && !createBtn.hasAttribute('data-listening')) {
-        createBtn.setAttribute('data-listening', 'true');
-        createBtn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const name = prompt("Enter playlist name:"); // Simplu popup
-            if (name && name.trim() !== "") {
-                try {
-                    await createPlaylist(token, userId, name);
-                    await renderList(); // Refresh la listă
-                } catch (error) {
-                    alert("Nu pot crea playlist-ul. Verifică consola (F12).");
-                    console.error(error);
+    // Butonul de creare
+    if (createBtn) {
+        // Prevenim duplicate listeners
+        if (!createBtn.hasAttribute('data-listening')) {
+            createBtn.setAttribute('data-listening', 'true');
+            
+            createBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                
+                const name = prompt("🎵 Enter playlist name:");
+                
+                if (name && name.trim() !== "") {
+                    try {
+                        console.log("Creating playlist:", name);
+                        await createPlaylist(token, userId, name.trim());
+                        
+                        // Success feedback
+                        alert("✅ Playlist created successfully!");
+                        
+                        // Refresh lista
+                        await renderList();
+                    } catch (error) {
+                        console.error("Eroare creare playlist:", error);
+                        alert("❌ Could not create playlist. Check console (F12) for details.");
+                    }
                 }
-            }
+            });
+        }
+    } else {
+        console.warn("⚠️ Nu găsesc butonul 'create-playlist-btn' în HTML!");
+    }
+}
+
+// === FUNCȚIE NOUĂ: ADD TO PLAYLIST ===
+async function handleAddToPlaylist(type, id, name) {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        alert("❌ No token found. Please login again.");
+        return;
+    }
+
+    try {
+        // 1. Obținem lista de playlist-uri
+        const playlistsData = await getUserPlaylists(token);
+        
+        if (!playlistsData || !playlistsData.items || playlistsData.items.length === 0) {
+            alert("❌ You don't have any playlists yet. Create one first!");
+            return;
+        }
+
+        // 2. Construim lista pentru prompt
+        let message = `Add "${name}" to which playlist?\n\n`;
+        playlistsData.items.forEach((pl, idx) => {
+            message += `${idx + 1}. ${pl.name}\n`;
         });
+        message += `\nEnter number (1-${playlistsData.items.length}):`;
+
+        const choice = prompt(message);
+        
+        if (!choice) return; // User canceled
+        
+        const index = parseInt(choice) - 1;
+        
+        if (index < 0 || index >= playlistsData.items.length) {
+            alert("❌ Invalid choice!");
+            return;
+        }
+
+        const selectedPlaylist = playlistsData.items[index];
+        
+        // 3. Obținem track URIs bazate pe tip
+        let trackUris = [];
+        
+        if (type === 'track') {
+            // Pentru track individual, folosim direct URI-ul
+            const trackUri = event.target.closest('.add-to-playlist-btn').dataset.uri;
+            trackUris = [trackUri];
+        } else if (type === 'album') {
+            const albumTracks = await getAlbumTracks(token, id);
+            trackUris = albumTracks.items.map(track => track.uri);
+        } else if (type === 'artist') {
+            const artistTracks = await getArtistTopTracks(token, id);
+            trackUris = artistTracks.tracks.map(track => track.uri);
+        }
+
+        if (trackUris.length === 0) {
+            alert("❌ No tracks found!");
+            return;
+        }
+
+        // 4. Adăugăm track-urile în playlist
+        await addTracksToPlaylist(token, selectedPlaylist.id, trackUris);
+        
+        const trackWord = trackUris.length === 1 ? 'track' : 'tracks';
+        alert(`✅ Added ${trackUris.length} ${trackWord} to "${selectedPlaylist.name}"!`);
+        
+    } catch (error) {
+        console.error("Error adding to playlist:", error);
+        alert("❌ Failed to add to playlist. Check console for details.");
     }
 }
