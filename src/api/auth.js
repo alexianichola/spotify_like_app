@@ -1,10 +1,10 @@
 // auth.js
 
-const CLIENT_ID = "60baf3871be946408432c88fba3b0f57"; // ID-ul tău de aplicație Spotify
-// URL-ul complet al fișierului callback.html pe care îl rulezi local
+const CLIENT_ID = "60baf3871be946408432c88fba3b0f57"; 
 const REDIRECT_URI = "http://127.0.0.1:5500/callback.html";
-// Permisiunile (Scopes) cerute de la utilizator
-const SCOPES = "user-read-private user-top-read";
+
+// --- AICI ERA EROAREA (Am șters dublura) ---
+const SCOPES = "user-read-private user-read-email user-top-read playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private";
 
 const CLIENT_SECRET = "8ccb68010896419b92cfd56d3eeed802";
 
@@ -14,11 +14,9 @@ const CLIENT_SECRET = "8ccb68010896419b92cfd56d3eeed802";
 export async function login() {
   const authUrl = new URL("https://accounts.spotify.com/authorize");
 
-  // 1. Generăm un string aleatoriu pentru a proteja împotriva atacurilor CSRF
   const state = generateRandomString(16);
   localStorage.setItem("spotify_auth_state", state);
 
-  // 2. Parametrii cererii de autorizare
   const params = {
     response_type: "code",
     client_id: CLIENT_ID,
@@ -28,7 +26,6 @@ export async function login() {
     show_dialog: true 
   };
 
-  // 3. Construim și efectuăm redirecționarea
   authUrl.search = new URLSearchParams(params).toString();
   console.log(authUrl.search);
   window.location = authUrl.toString();
@@ -42,7 +39,6 @@ export async function getToken(code) {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      // Autentificare Basic (Client ID:Client Secret) codată Base64
       Authorization: "Basic " + btoa(CLIENT_ID + ":" + CLIENT_SECRET),
     },
     body: new URLSearchParams({

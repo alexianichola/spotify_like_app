@@ -50,14 +50,19 @@
 
             <div id="playlists-section">
                 <h3>Your Playlists</h3>
+    
+                <!-- Un singur UL, ca să păstrăm stilul CSS original -->
                 <ul id="playlist-list">
-                    <li class="playlist-item"><a href="#"><i class="fas fa-list-ul"></i> <span>Playlist 1</span></a>
-                    </li>
-                    <li class="playlist-item"><a href="#"><i class="fas fa-list-ul"></i> <span>Playlist 2</span></a>
-                    </li>
+                    
+                    <!-- Aici JS-ul va injecta playlist-urile tale -->
+                    <div id="dynamic-playlists-container"></div>
 
-                    <li class="playlist-item create-new"><a href="#"><i class="fas fa-plus-square"></i> <span>Create
-                                Playlist</span></a></li>
+                    <!-- Butonul de Create rămâne ultimul element din listă -->
+                    <li class="playlist-item create-new">
+                        <a href="#" id="create-playlist-btn">
+                            <i class="fas fa-plus-square"></i> <span>Create Playlist</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
 
@@ -72,184 +77,80 @@
         <!-- === ZONA DE CONȚINUT PRINCIPAL === -->
         <main id="content">
 
-            <!-- Search Bar -->
-            <div id="global-search-overlay">
-                <div id="search-input-container">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="global-search-input" placeholder="What's on your mind?">
-                    <button id="close-search-btn" style="display: none;"><i class="fas fa-times"></i></button>
-                </div>
-
+        <!-- === 1. HEADER PROFIL === -->
+        <header id="profile-header" style="display: flex; align-items: center; gap: 20px; padding: 20px;">
+            <!-- Imagine Profil cu Skeleton default -->
+            <img id="user-profile-image" class="skeleton" 
+                src="" 
+                style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.5);" 
+                alt="Profile">
+            
+            <div id="profile-details">
+                <p class="profile-greeting" id="greeting-text" style="font-size: 0.9em; text-transform: uppercase; letter-spacing: 2px;">Welcome back</p>
                 
+                <!-- Numele utilizatorului (Mare) -->
+                <h1 id="user-display-name" class="skeleton skeleton-text" style="font-size: 3em; margin: 10px 0; min-width: 300px;">Loading...</h1>
+                
+                <p id="user-email-address" class="subtle-text skeleton skeleton-text" style="width: 200px;">...</p>
 
-            <!-- === 1. PROFIL HEADER (Nume, Poza, Email) === -->
-            <header id="profile-header">
-                <div id="profile-picture-container">
-                    <img id="user-profile-image" src="https://placehold.co/150x150/1C184C/FFeedd?text=P"
-                        alt="Profile picture"
-                        onerror="this.onerror=null;this.src='https://placehold.co/150x150/1C184C/FFeedd?text=P'">
+                <!-- Statistici -->
+                <div class="profile-stats" style="margin-top: 15px; display: flex; gap: 15px;">
+                    <span id="user-followers" class="skeleton" style="padding: 5px 15px; border-radius: 20px; min-width: 100px;">
+                        ... Followers
+                    </span>
+                    <span id="user-product" class="skeleton" style="padding: 5px 15px; border-radius: 20px; min-width: 60px;">
+                        PLAN
+                    </span>
                 </div>
-                <div id="profile-details">
-                    <p class="profile-greeting">Hey Jude, </p>
-                    <h1 id="user-display-name">username </h1>
-                    <p id="user-email-address" class="subtle-text">yourmail@spotify-user.com</p>
-                </div>
+            </div>
+        </header>
 
-                <!-- Am adăugat ID-ul utilizatorului aici (pentru cerința din instrucțiunile Gemini) -->
-                <p id="user-id-display" class="subtle-text" style="position: absolute; bottom: 10px; right: 10px;">
-                    SpotiPuff ID</p>
+        <!-- === 2. TOP ARTISTS === -->
+        <section class="content-section">
+            <div class="section-header">
+                <h2>Top Artists this month</h2>
+                <a href="top-artists.html" class="view-all-link">View all</a>
+            </div>
+            <div id="top-artists-grid" class="card-grid">
+                <!-- 5 Carduri GOALE (Skeletons) care se văd la început -->
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+            </div>
+        </section>
 
-            </header>
+        <!-- === 3. TOP ALBUMS === -->
+        <section class="content-section">
+            <div class="section-header">
+                <h2>Top Albums</h2>
+                <a href="top-albums.html" class="view-all-link">View all</a>
+            </div>
+            <div id="top-albums-grid" class="card-grid">
+                <!-- Skeletons -->
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+            </div>
+        </section>
 
-            <!-- === 2. TOP 5 ARTIȘTI === -->
-            <section class="content-section">
-                <div class="section-header">
-                    <h2>Top 5 Artists</h2>
-                    <a href="top-artists.html" class="view-all-link">View all <i class="fas fa-chevron-right"></i></a>
-                </div>
-
-                <!-- Card-uri de artiști: 5 coloane pe desktop (regula specială din CSS) -->
-                <div id="top-artists-grid" class="card-grid">
-                    <div class="music-card artist-card"><span class="card-rank">1</span><img
-                            src="https://placehold.co/150x150/4C468E/FFeedd?text=Artist+1" class="card-image"
-                            alt="Artist Placeholder">
-                        <h4 class="card-title">Artist</h4>
-                        <p class="card-subtitle">Artist</p>
-                    </div>
-                    <div class="music-card artist-card"><span class="card-rank">2</span><img
-                            src="https://placehold.co/150x150/4C468E/FFeedd?text=Artist+2" class="card-image"
-                            alt="Artist Placeholder">
-                        <h4 class="card-title">Artist</h4>
-                        <p class="card-subtitle">Artist</p>
-                    </div>
-                    <div class="music-card artist-card"><span class="card-rank">3</span><img
-                            src="https://placehold.co/150x150/4C468E/FFeedd?text=Artist+3" class="card-image"
-                            alt="Artist Placeholder">
-                        <h4 class="card-title">Artist</h4>
-                        <p class="card-subtitle">Artist</p>
-                    </div>
-                    <div class="music-card artist-card hidden-mobile"><span class="card-rank">4</span><img
-                            src="https://placehold.co/150x150/4C468E/FFeedd?text=Artist+4" class="card-image"
-                            alt="Artist Placeholder">
-                        <h4 class="card-title">Artist</h4>
-                        <p class="card-subtitle">Artist</p>
-                    </div>
-                    <div class="music-card artist-card hidden-mobile"><span class="card-rank">5</span><img
-                            src="https://placehold.co/150x150/4C468E/FFeedd?text=Artist+5" class="card-image"
-                            alt="Artist Placeholder">
-                        <h4 class="card-title">Artist</h4>
-                        <p class="card-subtitle">Artist</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- === 3. TOP 5 ALBUME === -->
-            <section class="content-section">
-                <div class="section-header">
-                    <h2>Top 5 Albums</h2>
-                    <a href="top-albums.html" class="view-all-link">View all <i class="fas fa-chevron-right"></i></a>
-                </div>
-
-                <div id="top-albums-grid" class="card-grid">
-                    <!-- PLACEHOLDERS: Albume -->
-                    <div class="music-card album-card"><span class="card-rank">1</span><img
-                            src="https://placehold.co/150x150/1C184C/FFeedd?text=Album+1" class="card-image"
-                            alt="Album Placeholder">
-                        <h4 class="card-title">Album Title</h4>
-                        <p class="card-subtitle">Artist</p>
-                    </div>
-                    <div class="music-card album-card"><span class="card-rank">2</span><img
-                            src="https://placehold.co/150x150/1C184C/FFeedd?text=Album+2" class="card-image"
-                            alt="Album Placeholder">
-                        <h4 class="card-title">Album Title</h4>
-                        <p class="card-subtitle">Artist</p>
-                    </div>
-                    <div class="music-card album-card"><span class="card-rank">3</span><img
-                            src="https://placehold.co/150x150/1C184C/FFeedd?text=Album+3" class="card-image"
-                            alt="Album Placeholder">
-                        <h4 class="card-title">Album Title</h4>
-                        <p class="card-subtitle">Artist</p>
-                    </div>
-                    <div class="music-card album-card hidden-mobile"><span class="card-rank">4</span><img
-                            src="https://placehold.co/150x150/1C184C/FFeedd?text=Album+4" class="card-image"
-                            alt="Album Placeholder">
-                        <h4 class="card-title">Album Title</h4>
-                        <p class="card-subtitle">Artist</p>
-                    </div>
-                    <div class="music-card album-card hidden-mobile"><span class="card-rank">5</span><img
-                            src="https://placehold.co/150x150/1C184C/FFeedd?text=Album+5" class="card-image"
-                            alt="Album Placeholder">
-                        <h4 class="card-title">Album Title</h4>
-                        <p class="card-subtitle">Artist</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Aci fac song recommendations -->
-            <section class="content-section">
-                <div class="section-header">
-                    <h2>Picked for you</h2>
-                </div>
-
-                <div id="recommendations-grid" class="card-grid">
-                    <!-- aci modific si adaug butonu de play for play a song -->
-
-                    <div class="music-card album-card">
-                        <img src="https://placehold.co/150x150/8884FF/121131?text=Rec+1" class="card-image"
-                            alt="Recommendation Placeholder">
-                        <h4 class="card-title">Recommended Track</h4>
-                        <p class="card-subtitle">Artist Name</p>
-
-                        <button class="play-button" data-uri="spotify:track:rec1">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </div>
-                    <div class="music-card album-card">
-                        <img src="https://placehold.co/150x150/8884FF/121131?text=Rec+2" class="card-image"
-                            alt="Recommendation Placeholder">
-                        <h4 class="card-title">Recommended Track</h4>
-                        <p class="card-subtitle">Artist Name</p>
-
-                        <button class="play-button" data-uri="spotify:track:rec2">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </div>
-                    <div class="music-card album-card">
-                        <img src="https://placehold.co/150x150/8884FF/121131?text=Rec+3" class="card-image"
-                            alt="Recommendation Placeholder">
-                        <h4 class="card-title">Recommended Track</h4>
-                        <p class="card-subtitle">Artist Name</p>
-
-                        <button class="play-button" data-uri="spotify:track:rec3">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </div>
-
-                    <div class="music-card album-card">
-                        <img src="https://placehold.co/150x150/8884FF/121131?text=Rec+4" class="card-image"
-                            alt="Recommendation Placeholder">
-                        <h4 class="card-title">Recommended Track</h4>
-                        <p class="card-subtitle">Artist Name</p>
-
-                        <button class="play-button" data-uri="spotify:track:rec4">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </div>
-
-                    <div class="music-card album-card">
-                        <img src="https://placehold.co/150x150/8884FF/121131?text=Rec+5" class="card-image"
-                            alt="Recommendation Placeholder">
-                        <h4 class="card-title">Recommended Track</h4>
-                        <p class="card-subtitle">Artist Name</p>
-
-                        <button class="play-button" data-uri="spotify:track:rec5">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </div>
-
-
-                </div>
-            </section>
+<!-- === 4. PICKED FOR YOU (RECOMANDĂRI) === -->
+    <section class="content-section">
+        <div class="section-header">
+            <h2>Picked for you</h2>
+        </div>
+        <div id="recommendations-grid" class="card-grid">
+            <!-- Skeletons -->
+            <div class="music-card skeleton" style="height: 250px;"></div>
+            <div class="music-card skeleton" style="height: 250px;"></div>
+            <div class="music-card skeleton" style="height: 250px;"></div>
+            <div class="music-card skeleton" style="height: 250px;"></div>
+            <div class="music-card skeleton" style="height: 250px;"></div>
+        </div>
+    </section>
 
         </main>
 
