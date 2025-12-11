@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('access_token');
     const path = window.location.pathname;
 
-    console.log("Sunt pe pagina:", path); // Debugging
+    console.log("Sunt pe pagina:", path);
 
     // --- 1. LOGICA LOGIN ---
     if (path.includes('index.html') || path === '/' || path.endsWith('/')) {
@@ -14,13 +14,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (token) window.location.href = 'profile.html';
     }
 
-    // --- 2. LOGICA GLOBALA (Search & Logout) ---
+    // --- 2. LOGICA GLOBALA ---
     if (token && (path.includes('html'))) { 
-        
-        // A. Activăm Search-ul
         setupSearch(token);
 
-        // B. Activăm Logout
         const logoutBtn = document.getElementById('logout-button');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => {
@@ -29,94 +26,88 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        // --- 3. LOGICA SPECIFICĂ PAGINILOR ---
-        
-        // === PAGINA PROFIL ===
+        // --- 3. LOGICA SPECIFICĂ ---
         if (path.includes('profile.html')) {
-            console.log("Incarc date profil...");
             await loadProfileData(token);
         }
-
-        // === PAGINA TOP ARTISTS ===
         if (path.includes('artists')) {
-            console.log("Incarc Top Artists...");
             try {
                 const artistsData = await getTopArtists(token, 20); 
                 renderTopArtists(artistsData.items); 
             } catch (e) { console.error("Eroare Top Artists:", e); }
         }
-
-        // === PAGINA TOP ALBUMS ===
         if (path.includes('albums')) {
-            console.log("Incarc Top Albums...");
             try {
                 const albumsData = await getTopAlbums(token, 20); 
                 renderTopAlbums(albumsData.items);
             } catch (e) { console.error("Eroare Top Albums:", e); }
         }
-    } 
-    // Redirect dacă nu ești logat
-    else if (!token && !path.includes('index.html') && path !== '/' && !path.includes('callback')) {
+    } else if (!token && !path.includes('index.html') && path !== '/' && !path.includes('callback')) {
         window.location.href = 'index.html';
     }
 
-    // --- 4. ACTIVARE PLAY BUTTONS (SMART PLAYER - ARTIST, ALBUM, TRACK) ---
+    // --- 4. ACTIVARE PLAY BUTTONS (FIX FINAL) ---
     document.body.addEventListener('click', (e) => {
-        // Căutăm butonul de play (chiar dacă dai click pe iconiță)
         const btn = e.target.closest('.play-button');
         
         if (btn) {
-            e.preventDefault(); // Oprim comportamentul standard
-            const uri = btn.dataset.uri; // Ex: spotify:artist:123 sau spotify:track:456
+            e.preventDefault();
+            const uri = btn.dataset.uri; 
             
             if (uri) {
                 console.log("Play la:", uri);
-                
-                // Spargem URI-ul în bucăți: ['spotify', 'artist', 'ID']
-                const parts = uri.split(':');
-                const type = parts[1]; // 'artist', 'track', sau 'album'
-                const id = parts[2];   // ID-ul efectiv
 
+                // A. Identificăm containerul Player
                 const playerContainer = document.getElementById('player-content');
-                
-                if (playerContainer) {
-                    // Construim link-ul corect pentru tipul respectiv
-                    const embedUrl = `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
-
-                    // Injectăm Player-ul Oficial Spotify
-                    playerContainer.innerHTML = `
-                        <h3 style="color: #8884ff; margin-bottom: 15px;">Now Playing</h3>
-                        <iframe 
-                            style="border-radius:12px" 
-                            src="${embedUrl}" 
-                            width="100%" 
-                            height="352" 
-                            frameBorder="0" 
-                            allowfullscreen="" 
-                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                            loading="lazy">
-                        </iframe>
-                        <button id="close-player" style="margin-top:10px; background:none; border:1px solid #555; color:white; padding:5px 10px; border-radius:20px; cursor:pointer;">Close Player</button>
-                    `;
-
-                    // Funcționalitate buton Close
-                    document.getElementById('close-player').addEventListener('click', () => {
-                        playerContainer.innerHTML = `
-                            <div id="no-song-message">
-                                <i class="fas fa-headphones-alt fa-3x" style="color: var(--color-main-accent);"></i>
-                                <p class="subtle-text" style="margin-top: 15px;">Looking for a song to play...</p>
-                            </div>`;
-                    });
+                if (!playerContainer) {
+                    alert("EROARE: Nu găsesc zona 'player-content' în HTML. Verifică dacă ești pe pagina bună!");
+                    return;
                 }
-            } else {
-                console.warn("Butonul nu are un URI valid.");
+
+                // B. Construim URL-ul
+                const parts = uri.split(':');
+                const type = parts[1]; 
+                const id = parts[2];
+                const embedUrl = `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
+
+                // C. Injectăm Player-ul
+                playerContainer.innerHTML = `
+                    <h3 style="color: #8884ff; margin-bottom: 15px;">Now Playing</h3>
+                    <iframe 
+                        style="border-radius:12px" 
+                        src="${embedUrl}" 
+                        width="100%" 
+                        height="352" 
+                        frameBorder="0" 
+                        allowfullscreen="" 
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                        loading="lazy">
+                    </iframe>
+                    <button id="close-player" style="margin-top:10px; background:none; border:1px solid #555; color:white; padding:5px 10px; border-radius:20px; cursor:pointer;">Close Player</button>
+                `;
+
+                // Funcționalitate buton Close
+                document.getElementById('close-player').addEventListener('click', () => {
+                    playerContainer.innerHTML = `
+                        <div id="no-song-message">
+                            <i class="fas fa-headphones-alt fa-3x" style="color: var(--color-main-accent);"></i>
+                            <p class="subtle-text" style="margin-top: 15px;">Looking for a song to play...</p>
+                        </div>`;
+                });
+
+                // D. IMPORTANT: ÎNCHIDEM SEARCH-UL CA SĂ VEZI PLAYER-UL!
+                const searchOverlay = document.getElementById('global-search-overlay');
+                if (searchOverlay && searchOverlay.style.display !== 'none') {
+                    console.log("Închid search-ul ca să vezi player-ul...");
+                    searchOverlay.style.display = 'none';
+                }
             }
         }
     });
 
-}); // SFARSIT DOMContentLoaded
+}); 
 
-// --- FUNCȚII SEARCH (Siguranță sporită) ---
+// --- FUNCȚII SEARCH ---
 function setupSearch(token) {
     const elements = {
         overlay: document.getElementById('global-search-overlay'),
@@ -126,9 +117,7 @@ function setupSearch(token) {
         btnClose: document.getElementById('close-search-btn')
     };
 
-    if (!elements.overlay || !elements.input) {
-        return;
-    }
+    if (!elements.overlay || !elements.input) return;
 
     const openSearch = (e) => {
         if(e) e.preventDefault();
@@ -151,9 +140,7 @@ function setupSearch(token) {
             resContainer.id = 'dynamic-search-results';
             resContainer.style.marginTop = '20px';
             resContainer.style.width = '100%';
-            
-            const parent = elements.input.parentNode;
-            parent.parentNode.insertBefore(resContainer, parent.nextSibling);
+            elements.input.parentNode.parentNode.insertBefore(resContainer, elements.input.parentNode.nextSibling);
         } else {
             document.getElementById('dynamic-search-results').innerHTML = '';
         }
@@ -193,6 +180,7 @@ function renderDynamicResults(data, container) {
     container.innerHTML = ''; 
     if (!data) return;
 
+    // Tracks
     if (data.tracks?.items.length > 0) {
         container.innerHTML += `<h3 style="color:#8884ff; margin: 20px 0 10px 0;">Songs</h3>`;
         data.tracks.items.slice(0, 5).forEach(track => {
@@ -200,11 +188,11 @@ function renderDynamicResults(data, container) {
             const html = `
                 <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 8px;">
                     <img src="${img}" style="width: 50px; height: 50px; border-radius: 4px;">
-                    <div>
+                    <div style="flex-grow:1;">
                         <div style="font-weight: bold; color: white;">${track.name}</div>
                         <div style="font-size: 0.85em; opacity: 0.7; color: #ccc;">${track.artists[0].name}</div>
                     </div>
-                    <button class="play-button" data-uri="${track.uri}" style="margin-left: auto; width: 30px; height: 30px; border-radius: 50%; border: none; background: #8884ff; color: #121131; cursor: pointer;">▶</button>
+                    <button class="play-button" data-uri="${track.uri}" style="width: 35px; height: 35px; border-radius: 50%; border: none; background: #8884ff; color: #121131; cursor: pointer; display: flex; align-items: center; justify-content: center;">▶</button>
                 </div>`;
             container.innerHTML += html;
         });
@@ -222,10 +210,8 @@ async function loadProfileData(token) {
             if (user.images?.length > 0 && document.getElementById('user-profile-image')) 
                 document.getElementById('user-profile-image').src = user.images[0].url;
         }
-        
         const artistsData = await getTopArtists(token, 5);
         renderTopArtists(artistsData.items);
-        
         const albumsData = await getTopAlbums(token, 5);
         renderTopAlbums(albumsData.items);
     } catch (error) { console.error("Eroare loadProfile:", error); }
@@ -234,7 +220,6 @@ async function loadProfileData(token) {
 function renderTopArtists(artists) {
     const container = document.getElementById('top-artists-grid');
     if(!container) return;
-    
     container.innerHTML = ''; 
     artists.forEach((artist, index) => {
         const img = artist.images[0]?.url || 'https://placehold.co/150';
@@ -252,7 +237,6 @@ function renderTopArtists(artists) {
 function renderTopAlbums(albums) {
     const container = document.getElementById('top-albums-grid');
     if(!container) return;
-    
     container.innerHTML = '';
     albums.forEach((album, index) => {
         const img = album.images[0]?.url || 'https://placehold.co/150';
