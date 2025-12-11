@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpotiPuff Profile</title>
+
+    <!-- fontul Outfit-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Iconițe Font Awesome (necesar pentru sidebar și link-uri) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+    <div id="app-container">
+
+        <!-- === BARA LATERALĂ (SIDEBAR) === -->
+        <aside id="sidebar">
+            <div id="sidebar-header">
+                <h2>SpotiPuff</h2>
+                <!-- BUTON PENTRU ASCUNDERE/EXTINDERE -->
+                <button id="sidebar-toggle"
+                    onclick="document.getElementById('app-container').classList.toggle('sidebar-closed');">
+                    <i class="fas fa-angle-left"></i>
+                </button>
+            </div>
+
+            <nav id="main-nav">
+                <ul>
+                    <li class="nav-item"><a href="profile.html" class="active"><i class="fas fa-home"></i>
+                            <span>Profile</span></a></li>
+                    <li class="nav-item">
+                        <a href="#" id="activate-search-btn"><i class="fas fa-search"></i> <span>Search</span></a>
+                    </li>
+                    <li class="nav-item"><a href="top-artists.html"><i class="fas fa-palette"></i> <span>Top
+                                Artists</span></a></li>
+                    <li class="nav-item"><a href="top-albums.html"><i class="fas fa-compact-disc"></i> <span>Top
+                                Albums</span></a></li>
+                </ul>
+            </nav>
+
+            <!-- Aci fac playlisturi-->
+
+            <div id="playlists-section">
+                <h3>Your Playlists</h3>
+    
+                <!-- Un singur UL, ca să păstrăm stilul CSS original -->
+                <ul id="playlist-list">
+                    
+                    <!-- Aici JS-ul va injecta playlist-urile tale -->
+                    <div id="dynamic-playlists-container"></div>
+
+                    <!-- Butonul de Create rămâne ultimul element din listă -->
+                    <li class="playlist-item create-new">
+                        <a href="#" id="create-playlist-btn">
+                            <i class="fas fa-plus-square"></i> <span>Create Playlist</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- aci am terminat playlistu-->
+
+            <div id="utility-links">
+                <button id="logout-button" class="accent-button"><i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span></button>
+            </div>
+        </aside>
+
+        <!-- === ZONA DE CONȚINUT PRINCIPAL === -->
+        <main id="content">
+
+        <!-- === 1. HEADER PROFIL === -->
+        <header id="profile-header" style="display: flex; align-items: center; gap: 20px; padding: 20px;">
+            <!-- Imagine Profil cu Skeleton default -->
+            <img id="user-profile-image" class="skeleton" 
+                src="" 
+                style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.5);" 
+                alt="Profile">
+            
+            <div id="profile-details">
+                <p class="profile-greeting" id="greeting-text" style="font-size: 0.9em; text-transform: uppercase; letter-spacing: 2px;">Welcome back</p>
+                
+                <!-- Numele utilizatorului (Mare) -->
+                <h1 id="user-display-name" class="skeleton skeleton-text" style="font-size: 3em; margin: 10px 0; min-width: 300px;">Loading...</h1>
+                
+                <p id="user-email-address" class="subtle-text skeleton skeleton-text" style="width: 200px;">...</p>
+
+                <!-- Statistici -->
+                <div class="profile-stats" style="margin-top: 15px; display: flex; gap: 15px;">
+                    <span id="user-followers" class="skeleton" style="padding: 5px 15px; border-radius: 20px; min-width: 100px;">
+                        ... Followers
+                    </span>
+                    <span id="user-product" class="skeleton" style="padding: 5px 15px; border-radius: 20px; min-width: 60px;">
+                        PLAN
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <!-- === 2. TOP ARTISTS === -->
+        <section class="content-section">
+            <div class="section-header">
+                <h2>Top Artists this month</h2>
+                <a href="top-artists.html" class="view-all-link">View all</a>
+            </div>
+            <div id="top-artists-grid" class="card-grid">
+                <!-- 5 Carduri GOALE (Skeletons) care se văd la început -->
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+            </div>
+        </section>
+
+        <!-- === 3. TOP ALBUMS === -->
+        <section class="content-section">
+            <div class="section-header">
+                <h2>Top Albums</h2>
+                <a href="top-albums.html" class="view-all-link">View all</a>
+            </div>
+            <div id="top-albums-grid" class="card-grid">
+                <!-- Skeletons -->
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+                <div class="music-card skeleton" style="height: 250px;"></div>
+            </div>
+        </section>
+
+<!-- === 4. PICKED FOR YOU (RECOMANDĂRI) === -->
+    <section class="content-section">
+        <div class="section-header">
+            <h2>Picked for you</h2>
+        </div>
+        <div id="recommendations-grid" class="card-grid">
+            <!-- Skeletons -->
+            <div class="music-card skeleton" style="height: 250px;"></div>
+            <div class="music-card skeleton" style="height: 250px;"></div>
+            <div class="music-card skeleton" style="height: 250px;"></div>
+            <div class="music-card skeleton" style="height: 250px;"></div>
+            <div class="music-card skeleton" style="height: 250px;"></div>
+        </div>
+    </section>
+
+        </main>
+
+        <!-- === COLOANA 3: MUSIC PLAYER (ADĂUGATĂ AICI) === -->
+        <aside id="music-player-bar">
+            <h3>Song Player</h3>
+            <div id="player-content">
+                <!-- Mesaj când nicio melodie nu este redată -->
+                <div id="no-song-message">
+                    <i class="fas fa-headphones-alt fa-3x" style="color: var(--color-main-accent);"></i>
+                    <p class="subtle-text" style="margin-top: 15px;">Looking for a song to play...</p>
+                </div>
+
+                <!-- Aici va fi UI-ul playerului (ascuns inițial) -->
+                <div id="song-playing-ui" style="display: none;">
+                    <img id="current-album-art" src="https://placehold.co/200x200/1C184C/FFeedd?text=Album"
+                        alt="Album Art">
+                    <h4 id="current-song-title">Song Title</h4>
+                    <p id="current-artist-name" class="subtle-text">Artist</p>
+                    <div id="player-controls">
+                        <button data-action="previous"><i class="fas fa-step-backward"></i></button>
+
+                        <button class="accent-button" data-action="pause"><i class="fas fa-play"></i></button>
+
+                        <button data-action="next"><i class="fas fa-step-forward"></i></button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- === NAVIGAȚIE DE JOS (MOBILE) === -->
+    <nav id="mobile-bottom-nav">
+        <ul>
+            <li><a href="profile.html" class="active"><i class="fas fa-home"></i> Profile</a></li>
+            <li>
+                <a href="#" id="activate-search-btn-mobile"><i class="fas fa-search"></i> Search </a>
+            </li>
+            <li><a href="top-artists.html"><i class="fas fa-palette"></i> Artists</a></li>
+            <li><a href="top-albums.html"><i class="fas fa-compact-disc"></i> Albums</a></li>
+        </ul>
+    </nav>
+
+     <!-- AICI trebuie să fie Search-ul acum (scos din main) -->
+    <div id="global-search-overlay">
+        <div id="search-input-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="global-search-input" placeholder="What's on your mind?">
+            <button id="close-search-btn"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div id="global-search-results">
+            <div id="search-results-list">
+                <p class="subtle-text">write min. 3 characters</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+    
+</body>
+
+</html>
